@@ -1,8 +1,8 @@
 #include "unistd.h"
 
-int 	ms_strlen(const char *str)
+int		ms_strlen(const char *str)
 {
-	int 	i;
+	int	i;
 
 	i = 0;
 	while (str[i])
