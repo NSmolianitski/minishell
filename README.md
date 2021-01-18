@@ -7,7 +7,7 @@
 
 - echo
 - cd
-- ~~pwd~~
+- ~~pwd~~ :white_check_mark:
 - export
 - unset
 - env
