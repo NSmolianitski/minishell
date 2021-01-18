@@ -1,10 +1,6 @@
 #include <unistd.h>
-<<<<<<< HEAD
 #include <stdlib.h>
 #include "libft.h"
-=======
-#include "ms_commands.h"
->>>>>>> Some files rename (pwd to ms_pwd, etc.)
 
 /*
 **  A function that prints shell tag
