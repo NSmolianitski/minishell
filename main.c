@@ -1,23 +1,7 @@
-#include <unistd.h>
-#include <stdlib.h>
-#include "ms_utils.h"
-
-int		get_pwd(void)
-{
-	char *str;
-
-	str = NULL;
-	str = getcwd(str, 0);
-	if (str == NULL)
-		return (-1);
-	print_line(str);
-	free(str);
-	str = NULL;
-	return (0);
-}
+#include "ms_commands.h"
 
 int		main(void)
 {
-	get_pwd();
+	print_pwd();
 	return (0);
 }
