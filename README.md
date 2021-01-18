@@ -7,7 +7,7 @@
 
 - echo
 - cd
-- pwd
+- ~~pwd~~
 - export
 - unset
 - env
