@@ -10,7 +10,7 @@ int		print_pwd(void)
 	str = getcwd(str, 0);
 	if (str == NULL)
 		return (-1);
-	print_line(str);
+	print_line(str, 1);
 	free(str);
 	str = NULL;
 	return (0);

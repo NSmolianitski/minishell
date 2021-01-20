@@ -3,7 +3,7 @@
 
 int		ms_echo(char *str, int n_option)
 {
-	print_line(str);
+	print_line(str, 1);
 	if (!n_option)
 		write(1, "\n", 1);
 	return (0);
