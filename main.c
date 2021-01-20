@@ -1,5 +1,6 @@
 #include <unistd.h>
 #include <stdlib.h>
+#include "ms_utils.h"
 #include "libft.h"
 #include "ms_parser.h"
 #include "ms_processor.h"
@@ -47,10 +48,11 @@ int			main(void)
 
 	while (1)
 	{
-		print_shell_tag();
-		cmd_line = get_cmd_line();
-		cmd = parser(cmd_line);
-		processor(cmd);
+		print_shell_tag();				//print shell tag
+		cmd_line = get_cmd_line();		//read command line and put it to a variable
+		cmd = parser(cmd_line);			//send command line to parser (and get command) !!! Change parser to return list or use processor into parser (to parse command and run immediately) !!!
+		if (ms_strcmp(cmd, ""))
+			processor(cmd);
 		free(cmd_line);
 	}
 	return (0);

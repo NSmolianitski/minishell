@@ -1,5 +1,8 @@
-#include "ms_utils.h"
 #include "libft.h"
+
+/*
+**  A function that gets command from command line
+*/
 
 static char	*get_cmd(char const *cmd_line)
 {

@@ -1,6 +1,10 @@
 #include "unistd.h"
 #include "libft.h"
 
+/*
+**  A function that prints string to fd
+*/
+
 int		print_line(char const *line, int fd)
 {
 	if (line == NULL)
@@ -8,6 +12,10 @@ int		print_line(char const *line, int fd)
 	write(fd, line, ft_strlen(line));
 	return (0);
 }
+
+/*
+**  A function that compares two strings and returns 0 if they are equal
+*/
 
 int		ms_strcmp(const char *s1, const char *s2)
 {
