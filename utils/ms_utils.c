@@ -1,19 +1,10 @@
 #include "unistd.h"
-
-int		ms_strlen(const char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i])
-		++i;
-	return (i);
-}
+#include "libft.h"
 
 int		print_line(char const *line)
 {
 	if (line == NULL)
 		return (-1);
-	write(1, line, ms_strlen(line));
+	write(1, line, ft_strlen(line));
 	return (0);
 }
