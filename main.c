@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "libft.h"
 
+/*
+**  A function that prints shell tag
+*/
+
 static void	print_shell_tag(void)
 {
 	write(1, "\033[32m", ft_strlen("\033[32m")); //output color
@@ -9,11 +13,15 @@ static void	print_shell_tag(void)
 	write(1, "\033[0m", ft_strlen("\033[0m"));
 }
 
+/*
+**  A function that gets the command line from input
+*/
+
 static char	*get_cmd_line(void)
 {
 	char	buff[1000];
-	char 	*cmd_line;
-	char 	*tmp;
+	char	*cmd_line;
+	char	*tmp;
 	int		read_bytes;
 
 	cmd_line = ft_strdup("");
