@@ -1,6 +1,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "libft.h"
+#include "ms_parser.h"
+#include "ms_processor.h"
 
 /*
 **  A function that prints shell tag
@@ -41,13 +43,14 @@ static char	*get_cmd_line(void)
 int			main(void)
 {
 	char	*cmd_line;
+	char 	*cmd;
 
 	while (1)
 	{
 		print_shell_tag();
 		cmd_line = get_cmd_line();
-//		write(0, cmd_line, ft_strlen(cmd_line));  //print command line
-//		write(0, "\n", 1);
+		cmd = parser(cmd_line);
+		processor(cmd);
 		free(cmd_line);
 	}
 	return (0);
