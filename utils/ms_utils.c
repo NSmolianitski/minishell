@@ -2,6 +2,18 @@
 #include "libft.h"
 
 /*
+**  A function that skips spaces and return index of first non-space character
+*/
+
+int		skip_spaces(char const *line, int i)
+{
+	while (line[i] == ' ')
+		++i;
+
+	return (i);
+}
+
+/*
 **  A function that prints string to fd
 */
 

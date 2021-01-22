@@ -1,32 +1,77 @@
+#include "ms_parser.h"
 #include "libft.h"
+#include "ms_utils.h"
 
 /*
 **  A function that gets command from command line
 */
 
-static char	*get_cmd(char const *cmd_line)
+static int	get_cmd(const char *cmd_line, char **cmd, int i)
 {
-	char	*cmd;
-	int 	i;
-
-	i = 0;
 	while (cmd_line[i])
 	{
 		++i;
-		if (ft_strchr(" ;", cmd_line[i - 1]))
+		if (ft_strchr(" ;|", cmd_line[i - 1]))
 			break ;
 	}
 	if (cmd_line[i] == '\0')
 		++i;
-	cmd = (char *)malloc(sizeof(char) * i);
-	ft_strlcpy(cmd, cmd_line, i);
+	*cmd = malloc(sizeof(char) * i);
+	ft_strlcpy(*cmd, cmd_line, i);
+	return (i - 1);
+}
+
+/*
+**  A function that counts command from command line
+*/
+
+static int	count_args(const char *cmd_line, int i)
+{
+	int 	args_num;
+
+	args_num = 1;
+	while (cmd_line[i] != '\0' && cmd_line[i] != ';' && cmd_line[i] != '|')
+	{
+		if (cmd_line[i] == ' ')
+		{
+			i = skip_spaces(cmd_line, i);
+			++args_num;
+		}
+		++i;
+	}
+	return (args_num);
+}
+
+static int	get_args(const char *cmd_line, char ***args, int i)
+{
+	int	arg_index;
+
+	arg_index = 0;
+	i = skip_spaces(cmd_line, i);
+	args = malloc(sizeof(char *) * count_args(cmd_line, i));
+	i = get_cmd(cmd_line, args[arg_index], i);
+	print_line(cmd_line + i, 1);
+
+	return (i);
+}
+
+static t_cmd	parse_cmd(char *cmd_line)
+{
+	int		i;
+	t_cmd	cmd;
+
+	i = 0;
+	i = get_cmd(cmd_line, &cmd.cmd, i);
+	i = skip_spaces(cmd_line, i);
+	if (!(cmd_line[i] == '\0' || cmd_line[i] == ';' || cmd_line[i] == '|'))
+		i = get_args(cmd_line, &cmd.args, i);
 	return (cmd);
 }
 
 char	*parser(char *cmd_line)
 {
-	char	*cmd;
+	t_cmd	cmd;
 
-	cmd = get_cmd(cmd_line);
-	return (cmd);
+	cmd = parse_cmd(cmd_line);
+	print_line(cmd.cmd, 1);
 }
