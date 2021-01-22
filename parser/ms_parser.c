@@ -78,6 +78,8 @@ static t_cmd	*parse_cmd(char *cmd_line, int *i)
 	*i = skip_spaces(cmd_line, *i);
 	if (!(cmd_line[*i] == '\0' || cmd_line[*i] == ';' || cmd_line[*i] == '|'))
 		*i = get_args(cmd_line, &cmd->args, *i);
+	else
+		cmd->args = NULL;
 	cmd->end = cmd_line[*i];
 	++(*i);
 	*i = skip_spaces(cmd_line, *i);
@@ -119,6 +121,7 @@ t_cmd	**parser(char *cmd_line)
 	{
 		realloc_cmd_arr(&cmd_arr, j);
 		cmd_arr[j] = parse_cmd(cmd_line, &i);
+		cmd_arr[j + 1] = 0;
 		++j;
 	}
 	return (cmd_arr);

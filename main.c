@@ -41,6 +41,26 @@ static char	*get_cmd_line(void)
 	return (cmd_line);
 }
 
+static void parser_free(char **cmd_line, t_cmd **cmd_arr)
+{
+	int 	i;
+
+	free(*cmd_line);
+	i = 0;
+	while (cmd_arr[i])
+	{
+		free(cmd_arr[i]->cmd);
+		cmd_arr[i]->cmd = NULL;
+		if (cmd_arr[i]->args != NULL)
+			free(cmd_arr[i]->args);
+		cmd_arr[i]->args = NULL;
+		free(cmd_arr[i]);
+		cmd_arr[i] = NULL;
+		++i;
+	}
+	free(cmd_arr);
+}
+
 int			main(void)
 {
 	char	*cmd_line;
@@ -55,7 +75,7 @@ int			main(void)
 			printf("%s\n", cmd_arr[i]->cmd);
 //		if (ms_strcmp(cmd, ""))
 //			processor(cmd);
-		free(cmd_line);
+		parser_free(&cmd_line, cmd_arr);
 	}
 	return (0);
 }
