@@ -1,5 +1,37 @@
+#include <stddef.h>
 #include "unistd.h"
 #include "libft.h"
+
+/*
+**  strlcpy that copies from i
+*/
+
+size_t	ms_strlcpy(char *dst, const char *src, size_t dstsize, size_t start)
+{
+	size_t	i;
+	size_t	j;
+
+	if (src == 0)
+		return (0);
+	if (src[0] == '\0')
+	{
+		dst[0] = '\0';
+		return (0);
+	}
+	i = 0;
+	j = 0;
+	while (src[i] != '\0')
+		++i;
+	++i;
+	while (start < dstsize && start < i)
+	{
+		dst[j] = src[start];
+		++start;
+		++j;
+	}
+	dst[--j] = '\0';
+	return (i - 1);
+}
 
 /*
 **  A function that skips spaces and return index of first non-space character

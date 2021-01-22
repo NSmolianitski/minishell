@@ -8,6 +8,9 @@
 
 static int	get_cmd(const char *cmd_line, char **cmd, int i)
 {
+	int j;
+
+	j = i;
 	while (cmd_line[i])
 	{
 		++i;
@@ -16,8 +19,8 @@ static int	get_cmd(const char *cmd_line, char **cmd, int i)
 	}
 	if (cmd_line[i] == '\0')
 		++i;
-	*cmd = malloc(sizeof(char) * i);
-	ft_strlcpy(*cmd, cmd_line, i);
+	*cmd = malloc(sizeof(char) * (i - j));
+	ms_strlcpy(*cmd, cmd_line, i, j);
 	return (i - 1);
 }
 
@@ -47,11 +50,14 @@ static int	get_args(const char *cmd_line, char ***args, int i)
 	int	arg_index;
 
 	arg_index = 0;
-	i = skip_spaces(cmd_line, i);
-	args = malloc(sizeof(char *) * count_args(cmd_line, i));
-	i = get_cmd(cmd_line, args[arg_index], i);
-	print_line(cmd_line + i, 1);
-
+	*args = malloc(sizeof(char *) * count_args(cmd_line, i));
+	while (cmd_line[i] != '\0' && cmd_line[i] != ';' && cmd_line[i] != '|')
+	{
+		i = skip_spaces(cmd_line, i);
+		i = get_cmd(cmd_line, &(*args)[arg_index], i);
+		print_line((*args)[arg_index], 1);
+		++arg_index;
+	}
 	return (i);
 }
 

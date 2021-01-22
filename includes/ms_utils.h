@@ -3,10 +3,12 @@
 
 # define NSFD "No such file or directory"
 # define CNF "command not found"
+# include <stddef.h>
 
 int		print_line(char const *line, int fd);
 void	print_error(char *error, char *str, int err_type);
 int		ms_strcmp(const char *s1, const char *s2);
 int		skip_spaces(char const *line, int i);
+size_t	ms_strlcpy(char *dst, const char *src, size_t dstsize, size_t start);
 
 # endif
