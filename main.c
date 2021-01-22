@@ -44,15 +44,17 @@ static char	*get_cmd_line(void)
 int			main(void)
 {
 	char	*cmd_line;
-	char 	*cmd;
+	t_cmd	**cmd_arr;
 
 	while (1)
 	{
 		print_shell_tag();				//print shell tag
 		cmd_line = get_cmd_line();		//read command line and put it to a variable
-		cmd = parser(cmd_line);			//send command line to parser (and get command) !!! Change parser to return list or use processor into parser (to parse command and run immediately) !!!
-		if (ms_strcmp(cmd, ""))
-			processor(cmd);
+		cmd_arr = parser(cmd_line);		//send command line to parser (and get command)
+		for (int i = 0; cmd_arr[i]; ++i)
+			printf("%s\n", cmd_arr[i]->cmd);
+//		if (ms_strcmp(cmd, ""))
+//			processor(cmd);
 		free(cmd_line);
 	}
 	return (0);

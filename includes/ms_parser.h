@@ -8,6 +8,6 @@ typedef struct	s_cmd
 	char	end;
 }				t_cmd;
 
-char	*parser(char *cmd_line);
+t_cmd	**parser(char *cmd_line);
 
 # endif
