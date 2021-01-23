@@ -68,11 +68,8 @@ static int	get_args(const char *cmd_line, char ***args, int i)
 **  A function that creates command structure for one command
 */
 
-static t_cmd	*parse_cmd(char *cmd_line, int *i)
+static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd)
 {
-	t_cmd	*cmd;
-
-	cmd = malloc(sizeof(t_cmd));
 	*i = skip_spaces(cmd_line, *i);
 	*i = get_word(cmd_line, &cmd->cmd, *i);
 	*i = skip_spaces(cmd_line, *i);
@@ -81,9 +78,9 @@ static t_cmd	*parse_cmd(char *cmd_line, int *i)
 	else
 		cmd->args = NULL;
 	cmd->end = cmd_line[*i];
-	++(*i);
+	if (cmd_line[*i] != '\0')
+		++(*i);
 	*i = skip_spaces(cmd_line, *i);
-	return (cmd);
 }
 
 /*
@@ -103,25 +100,43 @@ static void realloc_cmd_arr(t_cmd ***cmd_arr, int j)
 		(*cmd_arr)[i] = tmp[i];
 		++i;
 	}
-	(*cmd_arr)[i] = 0;
+	(*cmd_arr)[i + 1] = 0;
 	free(tmp);
 	tmp = NULL;
 }
 
-t_cmd	**parser(char *cmd_line)
+static int	count_cmds(const char *cmd_line)
+{
+	int		i;
+	int		cmds_num;
+
+	i = 0;
+	cmds_num = 0;
+	while (cmd_line[i])
+	{
+		if (cmd_line[i] == ';' || cmd_line[i] == '|')
+			++cmds_num;
+		++i;
+	}
+	return (cmds_num);
+}
+
+t_cmd	**parser(const char *cmd_line)
 {
 	t_cmd	**cmd_arr;
 	int 	i;
 	int 	j;
 
 	i = 0;
+	j = count_cmds(cmd_line);
+	cmd_arr = malloc(sizeof(t_cmd *) * (j + 2));
+	for (int k = 0; k <= j + 1; ++k)
+		cmd_arr[k] = malloc(sizeof(t_cmd));
+	cmd_arr[j + 1]->cmd = NULL;
 	j = 0;
-	cmd_arr = malloc(sizeof(t_cmd *) * (j + 1));
-	while (cmd_line[i])
+	while (cmd_line[i] != '\0')
 	{
-		realloc_cmd_arr(&cmd_arr, j);
-		cmd_arr[j] = parse_cmd(cmd_line, &i);
-		cmd_arr[j + 1] = 0;
+		parse_cmd(cmd_line, &i, cmd_arr[j]);
 		++j;
 	}
 	return (cmd_arr);
