@@ -6,19 +6,19 @@
 **  A function that gets word from command line
 */
 
-static int	get_word(const char *cmd_line, char **cmd, int i)
+static int	get_word(const char *cmd_line, char **cmd, int i) //!!!WARNING!!! !!!WARNING!!! --> "a; b;" <-- !!!WARNING!!! !!!WARNING!!!
 {
 	int j;
 
 	j = i;
-	while (cmd_line[i])
+	while (1)
 	{
 		++i;
-		if (ft_strchr(" ;|", cmd_line[i - 1]))
+		if (ft_strchr(" ;|\0", cmd_line[i - 1]))
 			break ;
 	}
-	if (cmd_line[i] == '\0')
-		++i;
+//	if (cmd_line[i] == '\0')
+//		++i;
 	*cmd = malloc(sizeof(char) * (i - j));
 	ms_strlcpy(*cmd, cmd_line, i, j);
 	return (i - 1);
@@ -105,17 +105,43 @@ static void realloc_cmd_arr(t_cmd ***cmd_arr, int j)
 	tmp = NULL;
 }
 
+static void	count_cmds_err_check(const char *cmd_line, int i)
+{
+	if (cmd_line[i] == ';')
+		print_error(SES, "", 2);
+	else if (cmd_line[i] == '|')
+		print_error(SEP, "", 2);
+	else
+		print_line("look into count_cmds_err_check for answer", 1);
+}
+
 static int	count_cmds(const char *cmd_line)
 {
 	int		i;
 	int		cmds_num;
+	char	*cmd;
 
 	i = 0;
 	cmds_num = 0;
 	while (cmd_line[i])
 	{
+		cmd = 0;
+		i = skip_spaces(cmd_line, i);
+		if (!ft_strchr(" |;", cmd_line[i]))
+			i = get_word(cmd_line, &cmd, i);
+		i = skip_spaces(cmd_line, i);
 		if (cmd_line[i] == ';' || cmd_line[i] == '|')
-			++cmds_num;
+		{
+			if (!cmd)
+			{
+				count_cmds_err_check(cmd_line, i);
+				return (0);
+			}
+			free(cmd);
+			i = skip_spaces(cmd_line, i);
+			if (cmd_line[i] != '\0')
+				++cmds_num;
+		}
 		++i;
 	}
 	return (cmds_num);
@@ -129,10 +155,12 @@ t_cmd	**parser(const char *cmd_line)
 
 	i = 0;
 	j = count_cmds(cmd_line);
-	cmd_arr = malloc(sizeof(t_cmd *) * (j + 2));
+	if (!j)
+		return (0);
+	cmd_arr = malloc(sizeof(t_cmd *) * (j + 1));
 	for (int k = 0; k <= j + 1; ++k)
 		cmd_arr[k] = malloc(sizeof(t_cmd));
-	cmd_arr[j + 1]->cmd = NULL;
+	cmd_arr[j]->cmd = NULL;
 	j = 0;
 	while (cmd_line[i] != '\0')
 	{
