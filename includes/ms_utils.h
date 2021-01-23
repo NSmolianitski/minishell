@@ -3,6 +3,8 @@
 
 # define NSFD "No such file or directory"
 # define CNF "command not found"
+# define SES "syntax error near unexpected token ';'"
+# define SEP "syntax error near unexpected token '|'"
 # include <stddef.h>
 
 int		print_line(char const *line, int fd);

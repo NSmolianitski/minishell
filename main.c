@@ -71,6 +71,8 @@ int			main(void)
 		print_shell_tag();				//print shell tag
 		cmd_line = get_cmd_line();		//read command line and put it to a variable
 		cmd_arr = parser(cmd_line);		//send command line to parser (and get command)
+		if (!cmd_arr)
+			continue ;
 		for (int i = 0; cmd_arr[i]->cmd; ++i)
 		{
 			print_line(cmd_arr[i]->cmd, 1);
