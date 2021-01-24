@@ -10,7 +10,7 @@
 - ~~pwd~~ :white_check_mark:
 - export
 - unset
-- env (вывод списка переменных готов)
+- ~~env~~ :white_check_mark:
 - exit
 - вызов функций bash через абсолютный путь (ls/cat/grep и т.д.)
 

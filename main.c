@@ -146,7 +146,7 @@ int				main(int argc, char **argv, char **envp)
 //			print_line(cmd_arr[i]->cmd, 1);
 //			print_line("\n", 1);
 //		}
-		processor(cmd_arr);						//execute commands
+		processor(cmd_arr, env_list);		//execute commands
 		parser_free(&cmd_line, cmd_arr);	//free commands array and command line
 	}
 	return (0);
