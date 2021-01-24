@@ -9,7 +9,7 @@
 - cd
 - ~~pwd~~ :white_check_mark:
 - export
-- unset
+- ~~unset~~ :white_check_mark:
 - ~~env~~ :white_check_mark:
 - exit
 - вызов функций bash через абсолютный путь (ls/cat/grep и т.д.)

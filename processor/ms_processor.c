@@ -13,7 +13,7 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 	else if (!ms_strcmp(cmd->cmd, "export"))
 		ms_export(cmd, env_list);
 	else if (!ms_strcmp(cmd->cmd, "unset"))
-		return (5);
+		ms_unset(cmd, env_list);
 	else if (!ms_strcmp(cmd->cmd, "env"))
 		ms_env(*env_list);
 	else if (!ms_strcmp(cmd->cmd, "exit"))

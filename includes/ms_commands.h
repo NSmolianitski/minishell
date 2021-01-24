@@ -6,5 +6,6 @@ int		ms_echo(char **args);
 int		ms_cd(char *str);
 void	ms_env(t_list *env_list);
 void	ms_export(t_cmd *cmd, t_list **env_list);
+void	ms_unset(t_cmd *cmd, t_list **env_list);
 
 #endif
