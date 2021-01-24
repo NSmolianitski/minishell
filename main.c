@@ -73,29 +73,82 @@ static void parser_free(char **cmd_line, t_cmd **cmd_arr)
 	free(cmd_arr);
 }
 
-int			main(void)
+static void		get_env(const char *env, char **name, char **content)
+{
+	int		i;
+	int		j;
+
+	j = 0;
+	while (env[j] != '=')
+		++j;
+	*name = malloc(sizeof(char) * (j + 1));
+	i = 0;
+	while (env[i] != '=')
+	{
+		(*name)[i] = env[i];
+		++i;
+	}
+	(*name)[i] = '\0';
+	++i;
+	j = i;
+	while (env[j] != '\0')
+		++j;
+	*content = malloc(sizeof(char) * ((j - i) + 1));
+	j = 0;
+	while (env[i] != '\0')
+	{
+		(*content)[j] = env[i];
+		++i;
+		++j;
+	}
+	(*content)[j] = '\0';
+}
+
+static void		make_env_list(char **envp, t_list **env_list)
+{
+	int		i;
+	char	*name;
+	char	*content;
+	t_list	*new_lst;
+
+	i = 0;
+	get_env(envp[i], &name, &content);
+	*env_list = ft_lstnew(name, content);
+	++i;
+	while (envp[i])
+	{
+		get_env(envp[i], &name, &content);
+		new_lst = ft_lstnew(name, content);
+		ft_lstadd_back(env_list, new_lst);
+		++i;
+	}
+}
+
+int				main(int argc, char **argv, char **envp)
 {
 	char	*cmd_line;
 	t_cmd	**cmd_arr;
+	t_list	*env_list;
 
+	make_env_list(envp, &env_list);
 	while (1)
 	{
 		print_shell_tag();				//print shell tag
 		cmd_line = get_cmd_line();		//read command line and put it to a variable
-		cmd_arr = parser(cmd_line);		//send command line to parser (and get command)
-		if (!cmd_arr)
+		cmd_arr = parser(cmd_line);		//send command line to parser (and get commands array)
+		if (!cmd_arr)					//if no commands -> continue
 		{
 			free(cmd_line);
 			continue;
 		}
-		for (int i = 0; cmd_arr[i]; ++i)
+		for (int i = 0; cmd_arr[i]; ++i)		//!print commands (only for testing)!
 		{
 			print_line(cmd_arr[i]->cmd, 1);
 			print_line("\n", 1);
 		}
 //		if (ms_strcmp(cmd, ""))
 //			processor(cmd);
-		parser_free(&cmd_line, cmd_arr);
+		parser_free(&cmd_line, cmd_arr);	//free commands array and command line
 	}
 	return (0);
 }

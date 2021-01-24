@@ -10,7 +10,7 @@
 - ~~pwd~~ :white_check_mark:
 - export
 - unset
-- env
+- env (вывод списка переменных готов)
 - exit
 
 ### Другое:
