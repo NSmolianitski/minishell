@@ -5,13 +5,14 @@
 
 ### Функции:
 
-- echo
+- ~~echo~~ :white_check_mark:
 - cd
 - ~~pwd~~ :white_check_mark:
 - export
 - unset
 - env (вывод списка переменных готов)
 - exit
+- вызов функций bash через абсолютный путь (ls/cat/grep и т.д.)
 
 ### Другое:
 
