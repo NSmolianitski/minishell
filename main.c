@@ -44,20 +44,32 @@ static char	*get_cmd_line(void)
 static void parser_free(char **cmd_line, t_cmd **cmd_arr)
 {
 	int 	i;
+	int 	j;
 
 	free(*cmd_line);
+	*cmd_line = NULL;
 	i = 0;
 	while (cmd_arr[i])
 	{
 		free(cmd_arr[i]->cmd);
 		cmd_arr[i]->cmd = NULL;
 		if (cmd_arr[i]->args != NULL)
+		{
+			j = 0;
+			while (cmd_arr[i]->args[j])
+			{
+				free(cmd_arr[i]->args[j]);
+				++j;
+			}
 			free(cmd_arr[i]->args);
+		}
 		cmd_arr[i]->args = NULL;
 		free(cmd_arr[i]);
 		cmd_arr[i] = NULL;
 		++i;
 	}
+	free(cmd_arr[i]);
+	cmd_arr[i] = NULL;
 	free(cmd_arr);
 }
 
@@ -72,15 +84,18 @@ int			main(void)
 		cmd_line = get_cmd_line();		//read command line and put it to a variable
 		cmd_arr = parser(cmd_line);		//send command line to parser (and get command)
 		if (!cmd_arr)
-			continue ;
-		for (int i = 0; cmd_arr[i]->cmd; ++i)
+		{
+			free(cmd_line);
+			continue;
+		}
+		for (int i = 0; cmd_arr[i]; ++i)
 		{
 			print_line(cmd_arr[i]->cmd, 1);
 			print_line("\n", 1);
 		}
 //		if (ms_strcmp(cmd, ""))
 //			processor(cmd);
-//		parser_free(&cmd_line, cmd_arr);
+		parser_free(&cmd_line, cmd_arr);
 	}
 	return (0);
 }
