@@ -2,7 +2,7 @@
 #include "ms_parser.h"
 #include "ms_commands.h"
 
-static int	check_cmd(t_cmd *cmd, t_list *env_list)
+static int	check_cmd(t_cmd *cmd, t_list **env_list)
 {
 	if (!ms_strcmp(cmd->cmd, "echo"))
 		ms_echo(cmd->args);
@@ -11,11 +11,11 @@ static int	check_cmd(t_cmd *cmd, t_list *env_list)
 	else if (!ms_strcmp(cmd->cmd, "pwd"))
 		return (3);
 	else if (!ms_strcmp(cmd->cmd, "export"))
-		return (4);
+		ms_export(cmd, env_list);
 	else if (!ms_strcmp(cmd->cmd, "unset"))
 		return (5);
 	else if (!ms_strcmp(cmd->cmd, "env"))
-		ms_env(env_list);
+		ms_env(*env_list);
 	else if (!ms_strcmp(cmd->cmd, "exit"))
 		return (7);
 	else
@@ -23,7 +23,7 @@ static int	check_cmd(t_cmd *cmd, t_list *env_list)
 	return (1);
 }
 
-void		processor(t_cmd	**cmd_arr, t_list *env_list)
+void		processor(t_cmd	**cmd_arr, t_list **env_list)
 {
 	int 	i;
 
