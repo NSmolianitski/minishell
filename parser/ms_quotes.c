@@ -6,7 +6,7 @@
 /*   By: kmichiko <kmichiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/23 20:36:13 by kmichiko          #+#    #+#             */
-/*   Updated: 2021/01/24 20:03:52 by kmichiko         ###   ########.fr       */
+/*   Updated: 2021/01/24 20:09:25 by kmichiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,11 +145,6 @@ char *proccess_double_quotes(char *str)
 				k++;
 			}
 			tmp[k] = '\0';
-			if (result)
-			{
-				free(result);
-				result = NULL;
-			}
 			result = ft_strjoin(result, tmp);
 			i+=j;
 		}
@@ -209,25 +204,25 @@ int main()
 	char *str;
 	int i;
 	int len;
-	int len2;
+	//int len2;
 
 	i = 0;
 	//argc+=0;
 	//char test[] = "'123'''\"hello\"'''''";
 	
-	char test[] = "\'$tes$wor\'";
+	char test[] = "\"test   gfgfggf\"$wor\"";
 	// str = parse_env(test);
 	printf("test=%s\n",test);
 	//char *test = argv[1];
 	len = strlen(test);
-	 while(i < len && test[i] != '\0')
-	{
+	//  while(i < len && test[i] != '\0')
+	// {
 		str = parse_qoutes(&test[i]);
-		len2 = strlen(str);
+	// 	len2 = strlen(str);
 		printf("(%s)", str);
-		i += len2;
-		if (test[i] != '\0')
-			i++;
-	}
+	// 	i += len2;
+	// 	if (test[i] != '\0')
+	// 		i++;
+	// }
 	return (0);
 }
