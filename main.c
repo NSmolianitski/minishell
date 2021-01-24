@@ -141,13 +141,12 @@ int				main(int argc, char **argv, char **envp)
 			free(cmd_line);
 			continue;
 		}
-		for (int i = 0; cmd_arr[i]; ++i)		//!print command names (only for testing)!
-		{
-			print_line(cmd_arr[i]->cmd, 1);
-			print_line("\n", 1);
-		}
-//		if (ms_strcmp(cmd, ""))				//execute commands
-//			processor(cmd);
+//		for (int i = 0; cmd_arr[i]; ++i)		//!print command names (only for testing)!
+//		{
+//			print_line(cmd_arr[i]->cmd, 1);
+//			print_line("\n", 1);
+//		}
+		processor(cmd_arr);						//execute commands
 		parser_free(&cmd_line, cmd_arr);	//free commands array and command line
 	}
 	return (0);

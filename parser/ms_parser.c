@@ -128,7 +128,27 @@ static int	count_cmds(const char *cmd_line)
 			cmd = NULL;
 		}
 	}
+	if (!cmds_num)
+		++cmds_num;
 	return (cmds_num);
+}
+
+/*
+**  A function that checks command line for emptiness
+*/
+
+static int	check_for_empty_line(const char *cmd_line)
+{
+	int 	i;
+
+	i = 0;
+	while (cmd_line[i])
+	{
+		if (cmd_line[i] != ' ')
+			return (0);
+		++i;
+	}
+	return (1);
 }
 
 t_cmd	**parser(const char *cmd_line)
@@ -139,9 +159,10 @@ t_cmd	**parser(const char *cmd_line)
 	int 	k;
 
 	i = 0;
-	j = count_cmds(cmd_line);
-	if (!j)
+	j = check_for_empty_line(cmd_line);
+	if (j)
 		return (0);
+	j = count_cmds(cmd_line);
 	cmd_arr = malloc(sizeof(t_cmd *) * (j + 1));
 	k = 0;
 	while (k < j)

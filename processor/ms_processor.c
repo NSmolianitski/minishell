@@ -1,4 +1,5 @@
 #include "ms_utils.h"
+#include "ms_parser.h"
 
 /*
 ** 0 -> no such command
@@ -31,8 +32,17 @@ static int	check_cmd(char *cmd)
 		return (0);
 }
 
-void		processor(char *cmd)
+void		processor(t_cmd	**cmd_arr)
 {
-	if (!check_cmd(cmd))
-		print_error(CNF, cmd, 1);
+	int 	i;
+
+	i = 0;
+	while (cmd_arr[i])
+	{
+		if (!check_cmd(cmd_arr[i]->cmd))
+			print_error(CNF, cmd_arr[i]->cmd, 1);
+		else
+			print_line("hello world\n", 1);
+		++i;
+	}
 }
