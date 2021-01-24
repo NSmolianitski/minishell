@@ -9,11 +9,12 @@
 # include <stddef.h>
 # include "libft.h"
 
-void	print_list(t_list *lst);
 int		print_line(char const *line, int fd);
 void	print_error(char *error, char *str, int err_type);
 int		ms_strcmp(const char *s1, const char *s2);
 int		skip_spaces(char const *line, int i);
 size_t	ms_strlcpy(char *dst, const char *src, size_t dstsize, size_t start);
+void	print_list(t_list *lst);
+char	*get_var_content(t_list *lst, char *var_name);
 
 # endif

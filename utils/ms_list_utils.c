@@ -13,3 +13,14 @@ void	print_list(t_list *lst)
 		lst = lst->next;
 	}
 }
+
+char	*get_var_content(t_list *lst, char *var_name)
+{
+	while (lst)
+	{
+		if (!ms_strcmp(lst->name, var_name))
+			return (lst->content);
+		lst = lst->next;
+	}
+	return (0);
+}
