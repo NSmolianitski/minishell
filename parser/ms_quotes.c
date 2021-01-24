@@ -6,7 +6,7 @@
 /*   By: kmichiko <kmichiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/23 20:36:13 by kmichiko          #+#    #+#             */
-/*   Updated: 2021/01/24 14:15:50 by kmichiko         ###   ########.fr       */
+/*   Updated: 2021/01/24 20:03:52 by kmichiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,27 @@
 #include <string.h>
 #include "libft.h"
 
-char *trim_quotes(char *str, char ch)
+/*
+* parse env variables 
+* For example, $test
+*/
+char *parse_env(char *str)
 {
 	int i;
 	int j;
 	char *result;
 
 	i = 0;
-	while (str[i] != '\0' && (str[i] != ch || (i > 0 && str[i - 1] == '\\' && str[i] == '"')))
+	j = 0;
+	if (str[i] != '\0' && (ft_isalpha(str[i]) || str[i] == '_'))
 	{
 		i++;
+		while(str[i] != '\0' && (ft_isalnum(str[i]) || str[i] == '_'))
+			i++;
 	}
-	result = (char *)malloc((i + 1) * sizeof(char));
-	j = 0;
-	while (j < i)
+	if (i == 0 || !(result = (char *)malloc((i + 1) * sizeof(char))))
+		return (NULL);
+	while(j < i)
 	{
 		result[j] = str[j];
 		j++;
@@ -37,23 +44,117 @@ char *trim_quotes(char *str, char ch)
 	return (result);
 }
 
+/*
+* parse slash
+* for example, 
+* // ---> /
+* /  ---> /
+* /' ---> '
+*/
+char *parse_backslash(char *str, int *offset)
+{
+	int i;
+	char *result;
+	
+
+	i = 0;
+	result = NULL;
+	if (str[i] != '\0' && ft_strchr("\"\\`$", str[i]))
+	{
+		result = (char *)malloc((2) * sizeof(char));
+		result[i] = str[i];
+		i++;
+		*offset = 2;
+	}
+	else
+	{
+		result = (char *)malloc((2) * sizeof(char));
+		result[i] = '\\';
+		i++;
+		*offset = 1;
+	}
+	result[i] = '\0';
+	return (result);
+}
+
+char *get_env(char *str)
+{
+	printf("|ENV=%s|\n", str);
+	return ("*VAR*");
+}
+
 char *proccess_double_quotes(char *str)
 {
 	int i;
 	int j;
+	int offset;
 	char *result;
+	char *env;
+	char *tmp;
+	int len;
 
-	i = 0;
-	while (str[i] != '\0' && str[i] != '"')
-		i++;
-	result = (char *)malloc((i + 1) * sizeof(char));
+	env = NULL;
+	result = NULL;
+	offset = 0;
 	j = 0;
-	while (j < i)
+	i = 0;
+	len = 0;
+	result = (char *)malloc(sizeof(char));
+	while(str[i] != '\0' && str[i] != '"')
 	{
-		result[j] = str[j];
-		j++;
+		printf("str[i]=%c\n", str[i]);
+		if (str[i] == '\\')
+		{
+			tmp = ft_strjoin(result, parse_backslash(&str[i], &offset));
+			if (result)
+			{
+				free(result);
+				result = NULL;
+			}
+			result = tmp;
+			i += offset;
+		}
+		else if (str[i] == '$')
+		{
+			i++;
+			// if (env)
+			// {
+			// 	free(env);
+			// 	env = NULL;
+			// }
+			env = get_env(parse_env(&str[i]));
+			tmp = ft_strjoin(result, env);
+			if (result)
+			{
+				free(result);
+				result = NULL;
+			}
+			result = tmp;
+			i += ft_strlen(parse_env(&str[i]));
+		}
+		else
+		{	
+			int k = 0;
+			j = 0;
+			while(str[i + j] != '\0' && str[i + j] != '\\' && str[i + j] != '$' && str[i + j] != '"')
+				j++;
+			tmp = (char *)malloc((j + 1) * sizeof(char));
+			while(k < j)
+			{
+				tmp[k] = str[i + k];
+				k++;
+			}
+			tmp[k] = '\0';
+			if (result)
+			{
+				free(result);
+				result = NULL;
+			}
+			result = ft_strjoin(result, tmp);
+			i+=j;
+		}
+
 	}
-	result[j] = '\0';
 	return (result);
 }
 
@@ -77,78 +178,24 @@ char *proccess_single_quotes(char *str)
 	return (result);
 }
 
-
-char *check_scape_symbols(char *str)
-{
-	int i;
-	char *result;
-	char *escape;
-	int len;
-	int count;
-
-	i = 0;
-	count = 0;
-	len = ft_strlen(str);
-	escape = (char *)ft_calloc(len,  sizeof(char));
-	while(str[i] != '\0')
-	{
-		if (str[i] == '\\' && str[i + 1] != '\0')
-		{
-			i++;
-			if (ft_strchr("\"\\$`", str[i]))
-			{
-				escape[i-1] = '1';
-				if (str[i] == '$')
-					escape[i] = '$';
-			}
-		}
-		else 
-			i++;
-	}
-	i = 0;
-	while(i < len)
-	{
-		if (escape[i] == '1')
-			count++;
-		i++;
-	}
-	result = (char *)malloc((len - count) * sizeof(char));
-	i = 0;
-	while(i < (len - count))
-	{
-		if (escape[i] != '1')
-			result[i] = str[i];
-		i++;
-	}
-
-	result[i] = '\0';
-	return (result);
-}
-
 char *parse_qoutes(char *str)
 {
 	int i;
 	char *result;
-	int is_double_quotes;
 
 	i = 0;
-	is_double_quotes = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] == '"')
 		{
 			i++;
-			result = trim_quotes(&str[i], '"');
-			//TO DO free
-			result = check_scape_symbols(result);
-			is_double_quotes = 1;
+			result = proccess_double_quotes(&str[i]);
 			return (result);
 		}
-		else if (str[i] == 39)
+		else if (str[i] == '\'')
 		{
 			i++;
-			result = trim_quotes(&str[i], 39);
-			is_double_quotes = 0;
+			result = proccess_single_quotes(&str[i]);
 			return (result);
 		}
 		i++;
@@ -168,15 +215,16 @@ int main()
 	//argc+=0;
 	//char test[] = "'123'''\"hello\"'''''";
 	
-	char test[] = "\"hello\"";
+	char test[] = "\'$tes$wor\'";
+	// str = parse_env(test);
+	printf("test=%s\n",test);
 	//char *test = argv[1];
 	len = strlen(test);
-	while(i < len && test[i] != '\0')
+	 while(i < len && test[i] != '\0')
 	{
-		
 		str = parse_qoutes(&test[i]);
 		len2 = strlen(str);
-		printf("%s |len=%d\n", str, len2);
+		printf("(%s)", str);
 		i += len2;
 		if (test[i] != '\0')
 			i++;
