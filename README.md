@@ -8,7 +8,7 @@
 - ~~echo~~ :white_check_mark:
 - cd
 - ~~pwd~~ :white_check_mark:
-- export
+- ~~export~~ :white_check_mark:
 - ~~unset~~ :white_check_mark:
 - ~~env~~ :white_check_mark:
 - exit
@@ -16,10 +16,10 @@
 
 ### Другое:
 
-- ;
+- ~~;~~ :white_check_mark:
 - кавычки
 - редиректы (< > << >>)
 - пайпы (|)
-- переменные окружения
+- ~~переменные окружения~~ :white_check_mark:
 - $? (вывод exit status'a последней выполненной команды)
 - сигналы (ctrl + C, ctrl + D, ctrl + \\)

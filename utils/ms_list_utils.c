@@ -12,6 +12,11 @@ void	print_list(t_list *lst, int export)
 	{
 		if (export)
 			print_line("declare -x ", 1);
+		if (lst->content == NULL && !export)
+		{
+			lst = lst->next;
+			continue ;
+		}
 		print_line(lst->name, 1);
 		if (lst->content != NULL)
 			write(1, "=", 1);
