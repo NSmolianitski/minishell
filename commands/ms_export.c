@@ -27,6 +27,37 @@ static void replace_var(t_cmd *cmd, t_list **env_list, char *name, int index)
 	free(name);
 }
 
+static void export_err(char *str)
+{
+	if (str[0] == '\0')
+		print_error(NVI, "=", 3);
+	else
+		print_error(NVI, str, 3);
+	free(str);
+}
+
+static int is_valid_name(char *name)
+{
+	int i;
+
+	if (!ft_isalpha(name[0]))
+	{
+		export_err(name);
+		return (0);
+	}
+	i = 0;
+	while (name[i])
+	{
+		if (!ft_isalpha(name[i]) || !ft_isalnum(name[i]))
+		{
+			export_err(name);
+			return (0);
+		}
+		++i;
+	}
+	return (1);
+}
+
 void	ms_export(t_cmd *cmd, t_list **env_list)
 {
 	int 	i;
@@ -39,15 +70,20 @@ void	ms_export(t_cmd *cmd, t_list **env_list)
 	if (!cmd->args)
 	{
 		print_list(*env_list, 1);
-		return ;							//!!!can be deleted, but don't forget to fix segfault!!!
+		return ;
 	}
-	i = 0;
 	k = 0;
 	while (cmd->args[k])
 	{
+		i = 0;
 		while (cmd->args[k][i] != '=' && cmd->args[k][i] != '\0')
 			++i;
 		name = ft_substr(cmd->args[k], 0, i);
+		if (!is_valid_name(name))
+		{
+			++k;
+			continue;
+		}
 		if (find_var(*env_list, name))
 			replace_var(cmd, env_list, name, k);
 		else

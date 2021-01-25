@@ -15,10 +15,11 @@ void	print_list(t_list *lst, int export)
 		print_line(lst->name, 1);
 		if (lst->content != NULL)
 			write(1, "=", 1);
-		if (lst->content != NULL && (!ms_strcmp("", lst->content)) && export)
-			print_line("\"\"", 1);
-		else
-			print_line(lst->content, 1);
+		if (lst->content != NULL && export)
+			print_line("\"", 1);
+		print_line(lst->content, 1);
+		if (lst->content != NULL && export)
+			print_line("\"", 1);
 		write(1, "\n", 1);
 		lst = lst->next;
 	}
