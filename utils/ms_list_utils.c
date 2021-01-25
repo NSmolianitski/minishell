@@ -15,7 +15,10 @@ void	print_list(t_list *lst, int export)
 		print_line(lst->name, 1);
 		if (lst->content != NULL)
 			write(1, "=", 1);
-		print_line(lst->content, 1);
+		if (lst->content != NULL && (!ms_strcmp("", lst->content)) && export)
+			print_line("\"\"", 1);
+		else
+			print_line(lst->content, 1);
 		write(1, "\n", 1);
 		lst = lst->next;
 	}
@@ -37,7 +40,7 @@ char	*get_var_content(t_list *lst, char *var_name)
 }
 
 /*
-**  A function that gets environment variable content
+**  A function that tries to find environment variable in list
 */
 
 int		find_var(t_list *lst, char *var_name)
@@ -46,6 +49,25 @@ int		find_var(t_list *lst, char *var_name)
 	{
 		if (!ms_strcmp(lst->name, var_name))
 			return (1);
+		lst = lst->next;
+	}
+	return (0);
+}
+
+/*
+**  A function that changes content of the environment variable in list
+*/
+
+int		change_var_content(t_list *lst, char *var_name, char *content)
+{
+	while (lst)
+	{
+		if (!ms_strcmp(lst->name, var_name))
+		{
+			free(lst->content);
+			lst->content = content;
+			return (1);
+		}
 		lst = lst->next;
 	}
 	return (0);

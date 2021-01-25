@@ -1,6 +1,32 @@
 #include "ms_utils.h"
 #include "ms_parser.h"
 
+static void replace_var(t_cmd *cmd, t_list **env_list, char *name, int index)
+{
+	int		i;
+	int		j;
+	char	*content;
+
+	i = 0;
+	while (cmd->args[index][i] != '=' && cmd->args[index][i] != '\0')
+		++i;
+	if (cmd->args[index][i] == '=' && cmd->args[index][i + 1] == '\0')
+	{
+		content = ft_strdup("");
+		change_var_content(*env_list, name, content);
+	}
+	else if (cmd->args[index][i] == '=')
+	{
+		++i;
+		j = i;
+		while (cmd->args[index][j] != '\0')
+			++j;
+		content = ft_substr(cmd->args[index], i, j - i);
+		change_var_content(*env_list, name, content);
+	}
+	free(name);
+}
+
 void	ms_export(t_cmd *cmd, t_list **env_list)
 {
 	int 	i;
@@ -9,11 +35,6 @@ void	ms_export(t_cmd *cmd, t_list **env_list)
 	char	*name;
 	char	*content;
 	t_list	*new_lst;
-
-/*
-**	- if there is an A=A variable, then 'export A' command does nothing
-**	- replace existing variable or create a new one
- */
 
 	if (!cmd->args)
 	{
@@ -28,7 +49,7 @@ void	ms_export(t_cmd *cmd, t_list **env_list)
 			++i;
 		name = ft_substr(cmd->args[k], 0, i);
 		if (find_var(*env_list, name))
-			print_line("Variable exists\n", 1);
+			replace_var(cmd, env_list, name, k);
 		else
 		{
 			if (cmd->args[k][i] == '=')

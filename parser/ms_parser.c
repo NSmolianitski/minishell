@@ -57,6 +57,7 @@ static int	get_args(const char *cmd_line, char ***args, int i)
 	{
 		i = skip_spaces(cmd_line, i);
 		i = get_word(cmd_line, &(*args)[arg_index], i);
+		i = skip_spaces(cmd_line, i);
 		++arg_index;
 	}
 	(*args)[arg_index] = 0;

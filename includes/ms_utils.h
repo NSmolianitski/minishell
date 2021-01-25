@@ -16,6 +16,7 @@ int		skip_spaces(char const *line, int i);
 size_t	ms_strlcpy(char *dst, const char *src, size_t dstsize, size_t start);
 void	print_list(t_list *lst, int export);
 char	*get_var_content(t_list *lst, char *var_name);
+int		change_var_content(t_list *lst, char *var_name, char *content);
 int		find_var(t_list *lst, char *var_name);
 void	*rm_var(t_list **lst, char *var_name);
 
