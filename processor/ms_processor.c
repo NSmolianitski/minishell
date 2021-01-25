@@ -2,6 +2,7 @@
 #include "ms_utils.h"
 #include "ms_parser.h"
 #include "ms_commands.h"
+#include "ms_processor.h"
 
 static void	list_to_arr(t_list *env_list, char ***envp)
 {
@@ -33,8 +34,9 @@ static void prepare_args(t_cmd *cmd, char ***args)
 
 	if (!cmd->args)
 	{
-		*args = malloc(sizeof(char *));
-		(*args)[0] = 0;
+		*args = malloc(sizeof(char *) * 2);
+		(*args)[0] = ft_strdup(cmd->cmd);
+		(*args)[1] = 0;
 		return ;
 	}
 	i = 0;
@@ -79,14 +81,16 @@ static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 		print_line("Failed to create child process :(", 1);
 		return (0);
 	}
-	wait(&status);
 	if (!pid)
-	{
-		execve(cmd->cmd, args, envp);
-		return (0);
-	}
+		exit (execve(cmd->cmd, args, envp));
+	else
+		wait(&status);
 	free_char_arr(&envp);
 	free_char_arr(&args);
+	if (status > 256)
+		return (0);
+	else if (status > 0)
+		g_exit_status = 1;
 	return (1);
 }
 
@@ -119,7 +123,10 @@ void		processor(t_cmd	**cmd_arr, t_list **env_list)
 	while (cmd_arr[i])
 	{
 		if (!check_cmd(cmd_arr[i], env_list))
+		{
 			print_error(CNF, cmd_arr[i]->cmd, 1);
+			g_exit_status = 127;
+		}
 		++i;
 	}
 }
