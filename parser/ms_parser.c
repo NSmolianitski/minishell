@@ -98,16 +98,22 @@ static int	count_cmds(const char *cmd_line)
 	int		i;
 	int		cmds_num;
 	char	*cmd;
+	int		break_flag;
 
 	i = 0;
-	cmd = NULL;
 	cmds_num = 0;
+	break_flag = 0;
 	while (cmd_line[i])
 	{
-		cmd = 0;
+		cmd = NULL;
 		i = skip_spaces(cmd_line, i);
 		if (!ft_strchr(" |;", cmd_line[i]))
+		{
 			i = get_word(cmd_line, &cmd, i);
+			if (!break_flag)
+				++cmds_num;
+			break_flag = 1;
+		}
 		i = skip_spaces(cmd_line, i);
 		if (cmd_line[i] == ';' || cmd_line[i] == '|')
 		{
@@ -116,12 +122,8 @@ static int	count_cmds(const char *cmd_line)
 				count_cmds_err_check(cmd_line, i);
 				return (0);
 			}
-			i = skip_spaces(cmd_line, i);
-			if (cmd_line[i] != '\0')
-			{
-				++cmds_num;
-				++i;
-			}
+			++i;
+			break_flag = 0;
 		}
 		if (cmd != NULL)
 		{
@@ -129,8 +131,6 @@ static int	count_cmds(const char *cmd_line)
 			cmd = NULL;
 		}
 	}
-	if (!cmds_num)
-		++cmds_num;
 	return (cmds_num);
 }
 

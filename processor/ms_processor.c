@@ -4,6 +4,10 @@
 #include "ms_commands.h"
 #include "ms_processor.h"
 
+/*
+**  A function that creates an array of strings from list
+*/
+
 static void	list_to_arr(t_list *env_list, char ***envp)
 {
 	int		i;
@@ -53,7 +57,11 @@ static void prepare_args(t_cmd *cmd, char ***args)
 	(*args)[i + 1] = 0;
 }
 
-static void free_char_arr(char ***args)
+/*
+**  A function that clears an array of strings
+*/
+
+static void free_strs_arr(char ***args)
 {
 	int i;
 
@@ -65,6 +73,10 @@ static void free_char_arr(char ***args)
 	}
 	free(*args);
 }
+
+/*
+**  A function that tries to execute external command
+*/
 
 static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 {
@@ -85,14 +97,18 @@ static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 		exit (execve(cmd->cmd, args, envp));
 	else
 		wait(&status);
-	free_char_arr(&envp);
-	free_char_arr(&args);
+	free_strs_arr(&envp);
+	free_strs_arr(&args);
 	if (status > 256)
 		return (0);
 	else if (status > 0)
 		g_exit_status = 1;
 	return (1);
 }
+
+/*
+**  A function that checks what command to execute
+*/
 
 static int	check_cmd(t_cmd *cmd, t_list **env_list)
 {

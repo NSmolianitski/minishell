@@ -41,6 +41,10 @@ static char	*get_cmd_line(void)
 	return (cmd_line);
 }
 
+/*
+**  A function that frees commands array and command line
+*/
+
 static void parser_free(char **cmd_line, t_cmd **cmd_arr)
 {
 	int 	i;
@@ -103,6 +107,10 @@ static void		get_env(const char *env, char **name, char **content)
 	}
 	(*content)[j] = '\0';
 }
+
+/*
+**  A function that creates a list from envp
+*/
 
 static void		make_env_list(char **envp, t_list **env_list)
 {
