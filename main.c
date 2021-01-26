@@ -138,6 +138,9 @@ int				main(int argc, char **argv, char **envp)
 	t_cmd	**cmd_arr;
 	t_list	*env_list;
 
+	argc+=0;			//for make unused var
+	argv[0] += 0;		//for make unused var
+
 	g_exit_status = 0;					//set exit status to zero
 	make_env_list(envp, &env_list);		//create environment variable list from envp
 	while (1)

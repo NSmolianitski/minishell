@@ -91,7 +91,7 @@ static int	get_word(const char *cmd_line, char **cmd, int i, t_list *env_list)
 	}
 	*cmd = malloc(sizeof(char) * (i - start));
 	ms_strlcpy(*cmd, cmd_line, i, start);
-//	swap_env(cmd, env_list);
+	//swap_env(cmd, env_list);
 	return (i - 1);
 }
 

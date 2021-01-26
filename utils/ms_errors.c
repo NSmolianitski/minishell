@@ -34,5 +34,6 @@ void	print_error(char *error, char *str, int err_type)
 	(!ms_strcmp(error, SES)) ? print_line(SES, 1) : 0;
 	(!ms_strcmp(error, SEP)) ? print_line(SEP, 1) : 0;
 	(!ms_strcmp(error, NVI)) ? print_line(NVI, 1) : 0;
+	(!ms_strcmp(error, SNIP)) ? print_line(SNIP, 1) : 0;
 	write(1, "\n", 1);
 }
