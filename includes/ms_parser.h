@@ -11,5 +11,6 @@ typedef struct	s_cmd
 }				t_cmd;
 
 t_cmd	**parser(const char *cmd_line, t_list *env_list);
+void	swap_env(char **cmd, t_list *env_list);
 
 # endif

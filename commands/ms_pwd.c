@@ -13,5 +13,6 @@ int		print_pwd(void)
 	print_line(str, 1);
 	free(str);
 	str = NULL;
+	write(1, "\n", 1);
 	return (0);
 }

@@ -1,3 +1,4 @@
+#include "ms_processor.h"
 #include "ms_parser.h"
 #include "libft.h"
 #include "ms_utils.h"
@@ -46,7 +47,7 @@ static int	swap_env_if_exists(char **cmd, char **result, char *content)
 **  A function that swaps command with env variable
 */
 
-static void	swap_env(char **cmd, t_list *env_list)
+void	swap_env(char **cmd, t_list *env_list)
 {
 	char	*env_start;
 	char	*content;
@@ -57,19 +58,19 @@ static void	swap_env(char **cmd, t_list *env_list)
 	{
 		env_start = ft_strchr(*cmd, '$');
 		tmp = find_env_in_word(*cmd, env_start + 1);
-		content = get_var_content(env_list, tmp);
-		free(tmp);
-		if (content)
-		{
-			if (!swap_env_if_exists(cmd, &result, content))
-			{
-				free(*cmd);
-				*cmd = result;
-				break;
-			}
-		}
+		if (!ms_strcmp(tmp, "?"))
+			content = ft_itoa(g_exit_status);
 		else
-			break ;
+			content = get_var_content(env_list, tmp);
+		free(tmp);
+		if (!content)
+			content = ft_strdup("");
+		if (!swap_env_if_exists(cmd, &result, content))
+		{
+			free(*cmd);
+			*cmd = result;
+			break;
+		}
 	}
 }
 
@@ -90,7 +91,7 @@ static int	get_word(const char *cmd_line, char **cmd, int i, t_list *env_list)
 	}
 	*cmd = malloc(sizeof(char) * (i - start));
 	ms_strlcpy(*cmd, cmd_line, i, start);
-	swap_env(cmd, env_list);
+//	swap_env(cmd, env_list);
 	return (i - 1);
 }
 

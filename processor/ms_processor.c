@@ -117,7 +117,7 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 	else if (!ms_strcmp(cmd->cmd, "cd"))
 		return (2);							//!!!MAKE CD HERE!!!
 	else if (!ms_strcmp(cmd->cmd, "pwd"))
-		return (3);							//!!!MAKE PWD HERE!!!
+		print_pwd();
 	else if (!ms_strcmp(cmd->cmd, "export"))
 		ms_export(cmd, env_list);
 	else if (!ms_strcmp(cmd->cmd, "unset"))
@@ -131,18 +131,48 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 	return (1);
 }
 
-void		processor(t_cmd	**cmd_arr, t_list **env_list)
+/*
+**  A function that executes command
+*/
+
+static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 {
 	int 	i;
 
+	swap_env(&cmd->cmd, *env_list);
 	i = 0;
+	if (cmd->args)
+	{
+		while (cmd->args[i])
+		{
+			swap_env(&cmd->args[i], *env_list);
+			++i;
+		}
+	}
+	if (!check_cmd(cmd, env_list))
+	{
+		print_error(CNF, cmd->cmd, 1);
+		g_exit_status = 127;
+	}
+}
+
+/*
+**  Functions in processor executes sequently (pipe commands executes together)
+*/
+
+void		processor(t_cmd	**cmd_arr, t_list **env_list)
+{
+	int 	i;
+	int 	is_pipe;
+
+	i = 0;
+	is_pipe = 0;
 	while (cmd_arr[i])
 	{
-		if (!check_cmd(cmd_arr[i], env_list))
-		{
-			print_error(CNF, cmd_arr[i]->cmd, 1);
-			g_exit_status = 127;
-		}
+		if (cmd_arr[i]->end == '|')
+			is_pipe = 1;
+		else if ((cmd_arr[i]->end == ';' || cmd_arr[i]->end == '\0') && !is_pipe)
+			execute_cmd(cmd_arr[i], env_list);
 		++i;
 	}
 }
