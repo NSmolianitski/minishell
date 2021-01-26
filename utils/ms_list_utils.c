@@ -36,10 +36,14 @@ void	print_list(t_list *lst, int export)
 
 char	*get_var_content(t_list *lst, char *var_name)
 {
+	char	*content;
 	while (lst)
 	{
 		if (!ms_strcmp(lst->name, var_name))
-			return (lst->content);
+		{
+			content = ft_strdup(lst->content);
+			return (content);
+		}
 		lst = lst->next;
 	}
 	return (0);

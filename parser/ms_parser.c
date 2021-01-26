@@ -2,11 +2,103 @@
 #include "libft.h"
 #include "ms_utils.h"
 
+static char *find_env_in_word(const char *cmd, char *env_start)
+{
+	char	*env_end;
+	char	*env;
+	int 	i;
+
+	env_end = ft_strchr(env_start, '$');
+	if (!env_end)
+		i = ft_strlen(env_start);
+	else
+		i = env_end - env_start;
+	env = ft_substr(cmd, (env_start - cmd), i);
+	return (env);
+}
+
 /*
-**  A function that gets word from command line
+**  A function that swaps command with env variable if variable exists
 */
 
-static int	get_word(const char *cmd_line, char **cmd, int i)
+static int	swap_env_if_exists(char **cmd, char **result, char *content)
+{
+	char	*index;
+	char	*tmp;
+
+	*result = ft_substr(*cmd, 0, (ft_strchr(*cmd, '$') - *cmd));
+	tmp = *result;
+	*result = ft_strjoin(*result, content);
+	free(tmp);
+	free(content);
+	index = ft_strchr(ft_strchr(*cmd, '$') + 1, '$');
+	if (!index)
+		return (0);
+	tmp = *result;
+	*result = ft_strjoin(*result, index);
+	free(tmp);
+	free(*cmd);
+	*cmd = *result;
+	return (1);
+}
+
+/*
+**  A function that swaps command with env variable
+*/
+
+static void	swap_env(char **cmd, t_list *env_list)
+{
+	char	*env_start;
+	char	*content;
+	char	*tmp;
+	char	*result;
+
+	while (ft_strchr(*cmd, '$'))
+	{
+		env_start = ft_strchr(*cmd, '$');
+		tmp = find_env_in_word(*cmd, env_start + 1);
+		content = get_var_content(env_list, tmp);
+		free(tmp);
+		if (content)
+		{
+			if (!swap_env_if_exists(cmd, &result, content))
+			{
+				free(*cmd);
+				*cmd = result;
+				break;
+			}
+		}
+		else
+			break ;
+	}
+}
+
+/*
+**  A function that gets word from command line and replaces environment variables
+*/
+
+static int	get_word(const char *cmd_line, char **cmd, int i, t_list *env_list)
+{
+	int start;
+
+	start = i;
+	while (1)
+	{
+		++i;
+		if (ft_strchr(" ;|\0", cmd_line[i - 1]))
+			break ;
+	}
+	*cmd = malloc(sizeof(char) * (i - start));
+	ms_strlcpy(*cmd, cmd_line, i, start);
+	swap_env(cmd, env_list);
+	return (i - 1);
+}
+
+/*
+**  A function that gets word from command line (without replacing variables)
+*/
+
+static int	get_word2(const char *cmd_line, char **cmd, int i)
 {
 	int start;
 
@@ -47,7 +139,7 @@ static int	count_args(const char *cmd_line, int i)
 **  A function that creates an array with arguments
 */
 
-static int	get_args(const char *cmd_line, char ***args, int i)
+static int	get_args(const char *cmd_line, char ***args, int i, t_list *env_list)
 {
 	int		arg_index;
 
@@ -56,7 +148,7 @@ static int	get_args(const char *cmd_line, char ***args, int i)
 	while (cmd_line[i] != '\0' && cmd_line[i] != ';' && cmd_line[i] != '|')
 	{
 		i = skip_spaces(cmd_line, i);
-		i = get_word(cmd_line, &(*args)[arg_index], i);
+		i = get_word(cmd_line, &(*args)[arg_index], i, env_list);
 		i = skip_spaces(cmd_line, i);
 		++arg_index;
 	}
@@ -68,13 +160,13 @@ static int	get_args(const char *cmd_line, char ***args, int i)
 **  A function that creates command structure for one command
 */
 
-static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd)
+static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd, t_list *env_list)
 {
 	*i = skip_spaces(cmd_line, *i);
-	*i = get_word(cmd_line, &cmd->cmd, *i);
+	*i = get_word(cmd_line, &cmd->cmd, *i, env_list);
 	*i = skip_spaces(cmd_line, *i);
 	if (!(cmd_line[*i] == '\0' || cmd_line[*i] == ';' || cmd_line[*i] == '|'))
-		*i = get_args(cmd_line, &cmd->args, *i);
+		*i = get_args(cmd_line, &cmd->args, *i, env_list);
 	else
 		cmd->args = NULL;
 	cmd->end = cmd_line[*i];
@@ -109,7 +201,7 @@ static int	count_cmds(const char *cmd_line)
 		i = skip_spaces(cmd_line, i);
 		if (!ft_strchr(" |;", cmd_line[i]))
 		{
-			i = get_word(cmd_line, &cmd, i);
+			i = get_word2(cmd_line, &cmd, i);
 			if (!break_flag)
 				++cmds_num;
 			break_flag = 1;
@@ -152,7 +244,7 @@ static int	check_for_empty_line(const char *cmd_line)
 	return (1);
 }
 
-t_cmd	**parser(const char *cmd_line)
+t_cmd	**parser(const char *cmd_line, t_list *env_list)
 {
 	t_cmd	**cmd_arr;
 	int 	i;
@@ -175,7 +267,7 @@ t_cmd	**parser(const char *cmd_line)
 	j = 0;
 	while (cmd_line[i] != '\0')
 	{
-		parse_cmd(cmd_line, &i, cmd_arr[j]);
+		parse_cmd(cmd_line, &i, cmd_arr[j], env_list);
 		++j;
 	}
 	return (cmd_arr);
