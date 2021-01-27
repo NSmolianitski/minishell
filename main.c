@@ -138,11 +138,8 @@ int				main(int argc, char **argv, char **envp)
 	t_cmd	**cmd_arr;
 	t_list	*env_list;
 
-	argc+=0;			//for make unused var
-	argv[0] += 0;		//for make unused var
-
-	g_exit_status = 0;					//set exit status to zero
-	make_env_list(envp, &env_list);		//create environment variable list from envp
+	g_exit_status = 0;							//set exit status to zero
+	make_env_list(envp, &env_list);				//create environment variable list from envp
 	while (1)
 	{
 		print_shell_tag();						//print shell tag
@@ -153,13 +150,8 @@ int				main(int argc, char **argv, char **envp)
 			free(cmd_line);
 			continue;
 		}
-//		for (int i = 0; cmd_arr[i]; ++i)		//!print command names (only for testing)!
-//		{
-//			print_line(cmd_arr[i]->cmd, 1);
-//			print_line("\n", 1);
-//		}
-		processor(cmd_arr, &env_list);		//execute commands
-		parser_free(&cmd_line, cmd_arr);	//free commands array and command line
+		processor(cmd_arr, &env_list);			//execute commands
+		parser_free(&cmd_line, cmd_arr);		//free commands array and command line
 	}
 	return (0);
 }

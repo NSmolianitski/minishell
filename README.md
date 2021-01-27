@@ -6,7 +6,7 @@
 ### Функции:
 
 - ~~echo~~ :white_check_mark:
-- cd
+- ~~cd~~ :white_check_mark:
 - ~~pwd~~ :white_check_mark:
 - ~~export~~ :white_check_mark:
 - ~~unset~~ :white_check_mark:

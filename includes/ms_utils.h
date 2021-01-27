@@ -1,12 +1,13 @@
 #ifndef MINISHELL_MS_UTILS_H
 # define MINISHELL_MS_UTILS_H
 
-# define NSFD "no such file or directory:"
+# define NSFD "No such file or directory"
 # define CNF "command not found"
 # define SES "syntax error near unexpected token ';'"
 # define SEP "syntax error near unexpected token '|'"
 # define NVI "not a valid identifier"
 # define SNIP "string not in pwd:"
+# define HNS "HOME not set"
 
 # include <stddef.h>
 # include "libft.h"

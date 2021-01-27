@@ -13,35 +13,30 @@
 #include <unistd.h>
 #include "ms_utils.h"
 
-int 	ms_cd(char **args)
+int		ms_cd(char **args, t_list *env_list)
 {
-	int result;
-	int i;
-	char *str;
+	int		result;
+	int		i;
+	char	*str;
 
 	i = 0;
 	result = 0;
-	while(args && args[i] != NULL)
+	while (args && args[i] != NULL)
 		i++;
 	if (i == 0)
 	{
-		str = NULL;
-		str = getcwd(str, 0);
-		result = chdir(str);
+		str = get_var_content(env_list, "HOME");
+		if (str)
+			result = chdir(str);
+		else
+			result = -2;
 		free(str);
-		str = NULL;
 	}
-	else if (i == 1)
+	else if (i > 0)
 		result = chdir(args[0]);
-	else
-	{
-		print_error(SNIP, "cd", 1);
-		write(1, "\n", 1);
-	}
 	if (result == -1)
-	{
-		print_error(NSFD, "cd", 1);
-		write(1, "\n", 1);
-	}
-	return (result);
+		print_error(NSFD, args[0], 4);
+	else if (result == -2)
+		print_error(HNS, "", 4);
+	return ((result < 0) ? 1 : 0);
 }

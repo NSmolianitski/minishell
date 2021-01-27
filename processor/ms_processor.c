@@ -115,7 +115,7 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 	if (!ms_strcmp(cmd->cmd, "echo"))
 		ms_echo(cmd->args);
 	else if (!ms_strcmp(cmd->cmd, "cd"))
-		ms_cd(cmd->args);						//!!!MAKE CD HERE!!!
+		ms_cd(cmd->args, *env_list);
 	else if (!ms_strcmp(cmd->cmd, "pwd"))
 		print_pwd();
 	else if (!ms_strcmp(cmd->cmd, "export"))

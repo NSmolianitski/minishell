@@ -16,6 +16,16 @@ static void	write_ms_err_begin_export(char *str)
 	write(1, "': ", 3);
 }
 
+static void	write_ms_err_begin_cd(char *str)
+{
+	write(1, "minishell: cd: ", 15);
+	if (str[0] != '\0')
+	{
+		print_line(str, 1);
+		write(1, ": ", 2);
+	}
+}
+
 static void	write_ms_err_begin(void)
 {
 	write(1, "minishell: ", 11);
@@ -29,11 +39,14 @@ void	print_error(char *error, char *str, int err_type)
 		write_ms_err_begin();
 	else if (err_type == 3)
 		write_ms_err_begin_export(str);
+	else if (err_type == 4)
+		write_ms_err_begin_cd(str);
 	(!ms_strcmp(error, NSFD)) ? print_line(NSFD, 1) : 0;
 	(!ms_strcmp(error, CNF)) ? print_line(CNF, 1) : 0;
 	(!ms_strcmp(error, SES)) ? print_line(SES, 1) : 0;
 	(!ms_strcmp(error, SEP)) ? print_line(SEP, 1) : 0;
 	(!ms_strcmp(error, NVI)) ? print_line(NVI, 1) : 0;
 	(!ms_strcmp(error, SNIP)) ? print_line(SNIP, 1) : 0;
+	(!ms_strcmp(error, HNS)) ? print_line(HNS, 1) : 0;
 	write(1, "\n", 1);
 }
