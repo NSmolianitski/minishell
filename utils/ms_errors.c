@@ -48,5 +48,6 @@ void	print_error(char *error, char *str, int err_type)
 	(!ms_strcmp(error, NVI)) ? print_line(NVI, 1) : 0;
 	(!ms_strcmp(error, SNIP)) ? print_line(SNIP, 1) : 0;
 	(!ms_strcmp(error, HNS)) ? print_line(HNS, 1) : 0;
+	(!ms_strcmp(error, MLA)) ? print_line(MLA, 1) : 0;
 	write(1, "\n", 1);
 }

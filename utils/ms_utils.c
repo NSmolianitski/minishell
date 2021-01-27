@@ -45,6 +45,15 @@ int		skip_spaces(char const *line, int i)
 	return (i);
 }
 
+char	*safe_strjoin(char **str1, const char *str2)
+{
+	char	*tmp;
+	tmp = *str1;
+	*str1 = ft_strjoin(*str1, str2);
+	free(tmp);
+	return (*str1);
+}
+
 /*
 **  A function that prints string to fd
 */

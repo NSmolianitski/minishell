@@ -8,6 +8,7 @@
 # define NVI "not a valid identifier"
 # define SNIP "string not in pwd:"
 # define HNS "HOME not set"
+# define MLA "\033[31mMULTILINE ATTACK!\nDon't try to break our shell with multilines! :(\033[0m"
 
 # include <stddef.h>
 # include "libft.h"
@@ -22,5 +23,6 @@ char	*get_var_content(t_list *lst, char *var_name);
 int		change_var_content(t_list *lst, char *var_name, char *content);
 int		find_var(t_list *lst, char *var_name);
 void	*rm_var(t_list **lst, char *var_name);
+char	*safe_strjoin(char **str1, const char *str2);
 
 # endif

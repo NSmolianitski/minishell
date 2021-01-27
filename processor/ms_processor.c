@@ -132,6 +132,121 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 }
 
 /*
+**  A function that gets coordinates of quotes in string
+*/
+
+static t_coords	get_quotes_coords(const char *str, int i)
+{
+	t_coords	coords;
+
+	coords.start = i;
+	coords.type = 0;
+	while (str[coords.start])
+	{
+		if (str[coords.start] == '\'')
+			coords.type = 1;
+		else if (str[coords.start] == '"')
+			coords.type = 2;
+		if (coords.type)
+			break ;
+		++coords.start;
+	}
+	if (str[coords.start] != '\0')
+	{
+		coords.end = coords.start + 1;
+		while (str[coords.end])
+		{
+			if ((coords.type == 1 && str[coords.end] == '\'') || (coords.type == 2 && str[coords.end] == '"'))
+				break ;
+			++coords.end;
+		}
+	}
+	return (coords);
+}
+
+/*
+**  A function that parses quotes string in simple string by coordinates
+*/
+
+static char	*prepare_quotes_str(char *str, t_list *env_list, t_coords coords, int i)
+{
+	char	*parsed_quotes;
+	char	*tmp;
+
+	parsed_quotes = ft_substr(str, coords.start, (coords.end + 1 - coords.start));
+	if (!ms_strcmp(parsed_quotes, "'") || !ms_strcmp(parsed_quotes, "\""))
+		return (NULL);
+	tmp = parsed_quotes;
+	parsed_quotes = parse_qoutes(parsed_quotes, env_list);
+	free(tmp);
+	if (ft_strchr("\"'", str[i]))
+		tmp = ft_strdup("");
+	else
+		tmp = ft_substr(str, i, coords.start);
+	safe_strjoin(&tmp, parsed_quotes);
+	free(parsed_quotes);
+	return (tmp);
+}
+
+/*
+**  A function that gets coordinates of quotes string and parses that string
+*/
+
+static int	swap_quotes(char **str, t_list *env_list)
+{
+	t_coords	coords;
+	int 		i;
+	char		*tmp;
+	char		*tmp2;
+
+	i = 0;
+	if (ft_strchr(*str, '\'') || ft_strchr(*str, '"'))
+	{
+		tmp = ft_strdup(*str);
+		tmp2 = NULL;
+		free(*str);
+		*str = ft_strdup("");
+		while (tmp[i])
+		{
+			coords = get_quotes_coords(tmp, i);
+			free(tmp2);
+			tmp2 = prepare_quotes_str(tmp, env_list, coords, i);
+			if (!tmp2)
+				return (1);
+			safe_strjoin(&(*str), tmp2);
+			i = coords.end + 1;
+		}
+		free(tmp);
+		free(tmp2);
+	}
+	else
+		swap_env(str, env_list);
+	return (0);
+}
+
+/*
+**  A function that checks for quotes and replace them
+*/
+
+static int	check_quotes(t_cmd *cmd, t_list *env_list)
+{
+	int 		i;
+
+	if (swap_quotes(&cmd->cmd, env_list))
+		return (1);
+	if (!cmd->args)
+		return (0);
+	i = 0;
+	while (cmd->args[i])
+	{
+		if (swap_quotes(&cmd->args[i], env_list))
+			return (1);
+		++i;
+	}
+	return (0);
+}
+
+/*
 **  A function that executes command
 */
 
@@ -139,21 +254,28 @@ static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 {
 	int 	i;
 
-	swap_env(&cmd->cmd, *env_list);
-	i = 0;
-	if (cmd->args)
+	if (check_quotes(cmd, *env_list))
 	{
-		while (cmd->args[i])
-		{
-			swap_env(&cmd->args[i], *env_list);
-			++i;
-		}
+		print_error(MLA, "MULTILINE", 5);
+		g_exit_status = 1;
 	}
-	if (!check_cmd(cmd, env_list))
+	else if (!check_cmd(cmd, env_list))
 	{
 		print_error(CNF, cmd->cmd, 1);
 		g_exit_status = 127;
 	}
+//	else
+//	{
+//		i = 0;
+//		if (cmd->args)
+//		{
+//			while (cmd->args[i])
+//			{
+//				swap_env(&cmd->args[i], *env_list);
+//				++i;
+//			}
+//		}
+//	}
 }
 
 /*

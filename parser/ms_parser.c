@@ -75,40 +75,34 @@ void	swap_env(char **cmd, t_list *env_list)
 }
 
 /*
-**  A function that gets word from command line and replaces environment variables
+**  A function that gets word from command line
 */
 
-static int	get_word(const char *cmd_line, char **cmd, int i, t_list *env_list)
+static int	get_word(const char *cmd_line, char **cmd, int i)
 {
 	int start;
+	int quotes_flag;
 
 	start = i;
+	quotes_flag = 0;
+	if (cmd_line[i] == '\'')
+		quotes_flag = 1;
+	else if (cmd_line[i] == '"')
+		quotes_flag = 2;
 	while (1)
 	{
 		++i;
-		if (ft_strchr(" ;|\0", cmd_line[i - 1]))
+		if ((!quotes_flag && ft_strchr(" ;|\0", cmd_line[i - 1])) || cmd_line[i - 1] == '\0')
 			break ;
-	}
-	*cmd = malloc(sizeof(char) * (i - start));
-	ms_strlcpy(*cmd, cmd_line, i, start);
-	//swap_env(cmd, env_list);
-	return (i - 1);
-}
-
-/*
-**  A function that gets word from command line (without replacing variables)
-*/
-
-static int	get_word2(const char *cmd_line, char **cmd, int i)
-{
-	int start;
-
-	start = i;
-	while (1)
-	{
-		++i;
-		if (ft_strchr(" ;|\0", cmd_line[i - 1]))
-			break ;
+		if ((quotes_flag == 1 && cmd_line[i] == '\'') || (quotes_flag == 2 && cmd_line[i] == '"'))
+			quotes_flag = 0;
+		else
+		{
+			if (!quotes_flag && (cmd_line[i] == '\''))
+				quotes_flag = 1;
+			else if (!quotes_flag && (cmd_line[i] == '"'))
+				quotes_flag = 2;
+		}
 	}
 	*cmd = malloc(sizeof(char) * (i - start));
 	ms_strlcpy(*cmd, cmd_line, i, start);
@@ -149,7 +143,7 @@ static int	get_args(const char *cmd_line, char ***args, int i, t_list *env_list)
 	while (cmd_line[i] != '\0' && cmd_line[i] != ';' && cmd_line[i] != '|')
 	{
 		i = skip_spaces(cmd_line, i);
-		i = get_word(cmd_line, &(*args)[arg_index], i, env_list);
+		i = get_word(cmd_line, &(*args)[arg_index], i);
 		i = skip_spaces(cmd_line, i);
 		++arg_index;
 	}
@@ -164,7 +158,7 @@ static int	get_args(const char *cmd_line, char ***args, int i, t_list *env_list)
 static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd, t_list *env_list)
 {
 	*i = skip_spaces(cmd_line, *i);
-	*i = get_word(cmd_line, &cmd->cmd, *i, env_list);
+	*i = get_word(cmd_line, &cmd->cmd, *i);
 	*i = skip_spaces(cmd_line, *i);
 	if (!(cmd_line[*i] == '\0' || cmd_line[*i] == ';' || cmd_line[*i] == '|'))
 		*i = get_args(cmd_line, &cmd->args, *i, env_list);
@@ -202,7 +196,7 @@ static int	count_cmds(const char *cmd_line)
 		i = skip_spaces(cmd_line, i);
 		if (!ft_strchr(" |;", cmd_line[i]))
 		{
-			i = get_word2(cmd_line, &cmd, i);
+			i = get_word(cmd_line, &cmd, i);
 			if (!break_flag)
 				++cmds_num;
 			break_flag = 1;

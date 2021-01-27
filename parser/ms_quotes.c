@@ -16,26 +16,27 @@
 #include "ms_parser.h"
 
 /*
-* parse env variables 
-* For example, $test
+** parse env variables
+** For example, $test
 */
-char *parse_env(char *str)
+
+char	*parse_env(char *str)
 {
-	int i;
-	int j;
-	char *result;
+	int		i;
+	int		j;
+	char	*result;
 
 	i = 0;
 	j = 0;
 	if (str[i] != '\0' && (ft_isalpha(str[i]) || str[i] == '_'))
 	{
 		i++;
-		while(str[i] != '\0' && (ft_isalnum(str[i]) || str[i] == '_'))
+		while (str[i] != '\0' && (ft_isalnum(str[i]) || str[i] == '_'))
 			i++;
 	}
 	if (i == 0 || !(result = (char *)malloc((i + 1) * sizeof(char))))
 		return (NULL);
-	while(j < i)
+	while (j < i)
 	{
 		result[j] = str[j];
 		j++;
@@ -45,17 +46,17 @@ char *parse_env(char *str)
 }
 
 /*
-* parse slash
-* for example, 
-* // ---> /
-* /  ---> /
-* /' ---> '
+** parse slash
+** for example,
+** // ---> /
+** /  ---> /
+** /' ---> '
 */
-char *parse_backslash(char *str, int *offset)
+
+char	*parse_backslash(char *str, int *offset)
 {
-	int i;
-	char *result;
-	
+	int		i;
+	char	*result;
 
 	i = 0;
 	result = NULL;
@@ -77,24 +78,23 @@ char *parse_backslash(char *str, int *offset)
 	return (result);
 }
 
-char *proccess_double_quotes(char *str, t_list *env_list)
+char	*proccess_double_quotes(char *str, t_list *env_list)
 {
-	int i;
-	int j;
-	int offset;
-	char *result;
-	char *env;
-	char *tmp;
-	int len;
+	int		i;
+	int		j;
+	int		offset;
+	char	*result;
+	char	*env;
+	char	*tmp;
+	char	*tmp2;
 
 	env = NULL;
 	result = NULL;
 	offset = 0;
 	j = 0;
 	i = 0;
-	len = 0;
-	result = (char *)malloc(sizeof(char));
-	while(str[i] != '\0' && str[i] != '"')
+	result = ft_strdup("");
+	while (str[i] != '\0' && str[i] != '"')
 	{
 		if (str[i] == '\\')
 		{
@@ -115,49 +115,65 @@ char *proccess_double_quotes(char *str, t_list *env_list)
 				free(env);
 				env = NULL;
 			}
-			env = get_var_content(env_list, parse_env(&str[i]));
+			tmp2 = parse_env(&str[i]);
+			env = get_var_content(env_list, tmp2);
+			free(tmp2);
+			tmp2 = NULL;
+			tmp2 = tmp;
 			tmp = ft_strjoin(result, env);
+			free(tmp2);
+			tmp2 = NULL;
 			if (result)
 			{
 				free(result);
 				result = NULL;
 			}
 			result = tmp;
-			i += ft_strlen(parse_env(&str[i]));
+			tmp = NULL;
+			tmp2 = parse_env(&str[i]);
+			i += ft_strlen(tmp2);
+			free(tmp2);
+			tmp2 = NULL;
 		}
 		else
-		{	
+		{
 			int k = 0;
 			j = 0;
-			while(str[i + j] != '\0' && str[i + j] != '\\' && str[i + j] != '$' && str[i + j] != '"')
+			while (str[i + j] != '\0' && str[i + j] != '\\' && str[i + j] != '$' && str[i + j] != '"')
 				j++;
 			tmp = (char *)malloc((j + 1) * sizeof(char));
-			while(k < j)
+			while (k < j)
 			{
 				tmp[k] = str[i + k];
 				k++;
 			}
 			tmp[k] = '\0';
+			tmp2 = result;
 			result = ft_strjoin(result, tmp);
-			i+=j;
+			free(tmp2);
+			tmp2 = NULL;
+			i += j;
 		}
-
 	}
+	free(tmp);
+	tmp = NULL;
+	free(env);
+	env = NULL;
 	return (result);
 }
 
-char *proccess_single_quotes(char *str)
+char	*proccess_single_quotes(char *str)
 {
-	int i;
-	int j;
-	char *result;
+	int		i;
+	int		j;
+	char	*result;
 
 	i = 0;
 	j = 0;
-	while(str[i] != '\0' && str[i] != '\'')
+	while (str[i] != '\0' && str[i] != '\'')
 		i++;
 	result = (char *)malloc((i + 1) * sizeof(char));
-	while(j < i)
+	while (j < i)
 	{
 		result[j] = str[j];
 		j++;
@@ -166,12 +182,14 @@ char *proccess_single_quotes(char *str)
 	return (result);
 }
 
-char *parse_qoutes(char *str, t_list *env_list)
+char	*parse_qoutes(char *str, t_list *env_list)
 {
-	int i;
-	char *result;
+	int		i;
+	char	*result;
 
 	i = 0;
+	if (str[0] == '\0')
+		str = ft_strdup("");
 	while (str[i] != '\0')
 	{
 		if (str[i] == '"')
