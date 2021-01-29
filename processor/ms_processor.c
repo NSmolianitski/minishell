@@ -174,7 +174,7 @@ static char	*prepare_quotes_str(char *str, t_list *env_list, t_coords coords, in
 	char	*tmp;
 
 	parsed_quotes = ft_substr(str, coords.start, (coords.end + 1 - coords.start));
-	if (!ms_strcmp(parsed_quotes, "'") || !ms_strcmp(parsed_quotes, "\"") || (parsed_quotes[ft_strlen(parsed_quotes) - 1] != '\'' && parsed_quotes[ft_strlen(parsed_quotes) - 1] != '"'))
+	if (!ms_strcmp(parsed_quotes, "'") || !ms_strcmp(parsed_quotes, "\""))
 		return (NULL);
 	tmp = parsed_quotes;
 	parsed_quotes = parse_qoutes(parsed_quotes, env_list);
@@ -182,7 +182,7 @@ static char	*prepare_quotes_str(char *str, t_list *env_list, t_coords coords, in
 	if (ft_strchr("\"'", str[i]))
 		tmp = ft_strdup("");
 	else
-		tmp = ft_substr(str, i, coords.start);
+		tmp = ft_substr(str, i, coords.start - i);
 	safe_strjoin(&tmp, parsed_quotes);
 	free(parsed_quotes);
 	return (tmp);
@@ -243,6 +243,7 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 	i = 0;
 	while (cmd->args[i])
 	{
+		swap_env(&cmd->args[i], env_list);
 		if (swap_quotes(&cmd->args[i], env_list))
 			return (1);
 		++i;
@@ -256,30 +257,16 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 
 static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 {
-	int 	i;
-
 	if (check_quotes(cmd, *env_list))
 	{
 		print_error(MLA, "MULTILINE", 5);
 		g_exit_status = 1;
 	}
-	else if (!check_cmd(cmd, env_list))
+	else if (!check_cmd(cmd, env_list) && ms_strcmp(cmd->cmd, ""))
 	{
 		print_error(CNF, cmd->cmd, 1);
 		g_exit_status = 127;
 	}
-//	else
-//	{
-//		i = 0;
-//		if (cmd->args)
-//		{
-//			while (cmd->args[i])
-//			{
-//				swap_env(&cmd->args[i], *env_list);
-//				++i;
-//			}
-//		}
-//	}
 }
 
 /*
