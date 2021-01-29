@@ -130,7 +130,7 @@ static int	get_args(const char *cmd_line, char ***args, int i)
 **  A function that creates command structure for one command
 */
 
-static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd, t_list *env_list)
+static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd)
 {
 	*i = skip_spaces(cmd_line, *i);
 	*i = get_word(cmd_line, &cmd->cmd, *i);
@@ -214,7 +214,7 @@ static int	check_for_empty_line(const char *cmd_line)
 	return (1);
 }
 
-t_cmd	**parser(const char *cmd_line, t_list *env_list)
+t_cmd	**parser(const char *cmd_line)
 {
 	t_cmd	**cmd_arr;
 	int 	i;
@@ -237,7 +237,7 @@ t_cmd	**parser(const char *cmd_line, t_list *env_list)
 	j = 0;
 	while (cmd_line[i] != '\0')
 	{
-		parse_cmd(cmd_line, &i, cmd_arr[j], env_list);
+		parse_cmd(cmd_line, &i, cmd_arr[j]);
 		++j;
 	}
 	return (cmd_arr);

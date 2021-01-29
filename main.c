@@ -138,13 +138,16 @@ int				main(int argc, char **argv, char **envp)
 	t_cmd	**cmd_arr;
 	t_list	*env_list;
 
+	argc += 0;
+	argv += 0;
+
 	g_exit_status = 0;							//set exit status to zero
 	make_env_list(envp, &env_list);				//create environment variable list from envp
 	while (1)
 	{
 		print_shell_tag();						//print shell tag
 		cmd_line = get_cmd_line();				//read command line and put it to a variable
-		cmd_arr = parser(cmd_line, env_list);	//send command line to parser (and get commands array)
+		cmd_arr = parser(cmd_line);	//send command line to parser (and get commands array)
 		if (!cmd_arr)							//if no commands -> continue
 		{
 			free(cmd_line);

@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <fcntl.h>
 #include "ms_utils.h"
 #include "ms_parser.h"
 #include "ms_commands.h"
@@ -103,31 +104,6 @@ static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 		return (0);
 	else if (status > 0)
 		g_exit_status = 1;
-	return (1);
-}
-
-/*
-**  A function that checks what command to execute
-*/
-
-static int	check_cmd(t_cmd *cmd, t_list **env_list)
-{
-	if (!ms_strcmp(cmd->cmd, "echo"))
-		ms_echo(cmd->args);
-	else if (!ms_strcmp(cmd->cmd, "cd"))
-		ms_cd(cmd->args, *env_list);
-	else if (!ms_strcmp(cmd->cmd, "pwd"))
-		print_pwd();
-	else if (!ms_strcmp(cmd->cmd, "export"))
-		ms_export(cmd, env_list);
-	else if (!ms_strcmp(cmd->cmd, "unset"))
-		ms_unset(cmd, env_list);
-	else if (!ms_strcmp(cmd->cmd, "env"))
-		ms_env(*env_list);
-	else if (!ms_strcmp(cmd->cmd, "exit"))
-		return (7);							//!!!MAKE EXIT HERE!!!
-	else if (!try_external_cmd(cmd, env_list))
-		return (0);
 	return (1);
 }
 
@@ -299,11 +275,88 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 }
 
 /*
+**  A function that replaces file descriptors for redirects
+*/
+
+static void redir_prepare(char *file, int stream)
+{
+	int		temp_fd;
+	char	buff[1000];
+
+	if (stream == 3)
+	{
+		temp_fd = open(file, O_RDWR | O_CREAT, 0666);
+		read(temp_fd, buff, 999);
+		dup2(temp_fd, 1);
+	}
+	else
+	{
+		temp_fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0666);
+		dup2(temp_fd, stream);
+	}
+	close(temp_fd);
+}
+
+/*
+**  A function that handles redirects if they exists
+*/
+
+static void handle_redirects(t_cmd *cmd)
+{
+	int	i;
+
+	if (!cmd->args)
+		return ;
+	i = 0;
+	while (cmd->args[i])
+	{
+		if (!ms_strcmp(">", cmd->args[i]) && ms_strcmp(">", cmd->args[i + 1]))
+			redir_prepare(cmd->args[i + 1], 1);
+		else if (!ms_strcmp("<", cmd->args[i]))
+			redir_prepare(cmd->args[i + 1], 0);
+		else if (!ms_strcmp(">", cmd->args[i]) && !ms_strcmp(">", cmd->args[i + 1]))
+			redir_prepare(cmd->args[i + 1], 3);
+		++i;
+	}
+}
+
+/*
+**  A function that checks what command to execute
+*/
+
+static int	check_cmd(t_cmd *cmd, t_list **env_list)
+{
+	handle_redirects(cmd);
+	if (!ms_strcmp(cmd->cmd, "echo"))
+		ms_echo(cmd->args);
+	else if (!ms_strcmp(cmd->cmd, "cd"))
+		ms_cd(cmd->args, *env_list);
+	else if (!ms_strcmp(cmd->cmd, "pwd"))
+		print_pwd();
+	else if (!ms_strcmp(cmd->cmd, "export"))
+		ms_export(cmd, env_list);
+	else if (!ms_strcmp(cmd->cmd, "unset"))
+		ms_unset(cmd, env_list);
+	else if (!ms_strcmp(cmd->cmd, "env"))
+		ms_env(*env_list);
+	else if (!ms_strcmp(cmd->cmd, "exit"))
+		return (7);							//!!!MAKE EXIT HERE!!!
+	else if (!try_external_cmd(cmd, env_list))
+		return (0);
+	return (1);
+}
+
+/*
 **  A function that executes command
 */
 
 static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 {
+	int	stdout_fd;
+	int	stdin_fd;
+
+	stdin_fd = dup(0);
+	stdout_fd = dup(1);
 	if (check_quotes(cmd, *env_list))
 	{
 		print_error(MLA, "MULTILINE", 5);
@@ -314,6 +367,10 @@ static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 		print_error(CNF, cmd->cmd, 1);
 		g_exit_status = 127;
 	}
+	dup2(stdin_fd, 0);
+	dup2(stdout_fd, 1);
+	close(stdin_fd);
+	close(stdout_fd);
 }
 
 /*
