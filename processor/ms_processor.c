@@ -132,6 +132,25 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 }
 
 /*
+**  A function that checks quote escape
+*/
+
+static int		is_quote_escaped(const char *str, int i)
+{
+	if (i > 1)
+	{
+		if (str[i - 1] == '\\' && str[i - 2] == '\\')
+			return (0);
+		else if (str[i - 1] == '\\')
+			return (1);
+	}
+	else if (i > 0)
+		if (str[i - 1] == '\\')
+			return (1);
+	return (0);
+}
+
+/*
 **  A function that gets coordinates of quotes in string
 */
 
@@ -143,9 +162,9 @@ static t_coords	get_quotes_coords(const char *str, int i)
 	coords.type = 0;
 	while (str[coords.start])
 	{
-		if (str[coords.start] == '\'')
+		if (str[coords.start] == '\'' && !is_quote_escaped(str, coords.start))
 			coords.type = 1;
-		else if (str[coords.start] == '"')
+		else if (str[coords.start] == '"' && !is_quote_escaped(str, coords.start))
 			coords.type = 2;
 		if (coords.type)
 			break ;
@@ -165,6 +184,20 @@ static t_coords	get_quotes_coords(const char *str, int i)
 }
 
 /*
+**  A function that checks if string is multiline
+*/
+
+static int	check_multiline(char *str)
+{
+	int	i;
+
+	i = ft_strlen(str);
+	if ((str[i - 1] != '\'' && str[i - 1] != '"') || (!ms_strcmp(str, "'") || !ms_strcmp(str, "\"")))
+		return (1);
+	return (0);
+}
+
+/*
 **  A function that parses quotes string in simple string by coordinates
 */
 
@@ -174,7 +207,7 @@ static char	*prepare_quotes_str(char *str, t_list *env_list, t_coords coords, in
 	char	*tmp;
 
 	parsed_quotes = ft_substr(str, coords.start, (coords.end + 1 - coords.start));
-	if (!ms_strcmp(parsed_quotes, "'") || !ms_strcmp(parsed_quotes, "\""))
+	if (check_multiline(parsed_quotes))
 		return (NULL);
 	tmp = parsed_quotes;
 	parsed_quotes = parse_qoutes(parsed_quotes, env_list);
@@ -200,7 +233,7 @@ static int	swap_quotes(char **str, t_list *env_list)
 	char		*tmp2;
 
 	i = 0;
-	if (ft_strchr(*str, '\'') || ft_strchr(*str, '"'))
+	if (ms_bs_strchr(*str, '\'') || ms_bs_strchr(*str, '"'))
 	{
 		tmp = ft_strdup(*str);
 		tmp2 = NULL;
@@ -229,6 +262,37 @@ static int	swap_quotes(char **str, t_list *env_list)
 }
 
 /*
+**  A function that removes alone '\' and handles '\\' into '\'
+*/
+
+static void		handle_bslash(char **str)
+{
+	char	*tmp;
+	int 	i;
+	int 	str_diff;
+
+	tmp = ft_strdup(*str);
+	i = 0;
+	str_diff = 0;
+	while (tmp[i])
+	{
+		if (tmp[i] == '\\')
+		{
+			if (tmp[i + 1] == '\\')
+			{
+				ms_strswap(str, "\\", (i - str_diff), 1);
+				++i;
+			}
+			else
+				ms_strswap(str, "", (i - str_diff), 0);
+			++str_diff;
+		}
+		++i;
+	}
+	free(tmp);
+}
+
+/*
 **  A function that checks for quotes and replace them
 */
 
@@ -238,12 +302,14 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 	swap_env(&cmd->cmd, env_list);
 	if (swap_quotes(&cmd->cmd, env_list))
 		return (1);
+	handle_bslash(&cmd->cmd);
 	if (!cmd->args)
 		return (0);
 	i = 0;
 	while (cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
+		handle_bslash(&cmd->args[i]);
 		if (swap_quotes(&cmd->args[i], env_list))
 			return (1);
 		++i;

@@ -93,7 +93,7 @@ int		ms_strcmp(const char *s1, const char *s2)
 }
 
 /*
-**  A function like strchr, but ignores content in quotes
+**  A function like strchr, but ignores content in quotes, escaped $, but handles escaped quotes
 */
 
 char	*ft_strchr_quotes(const char *s, int c)
@@ -115,7 +115,7 @@ char	*ft_strchr_quotes(const char *s, int c)
 			while (s[i] != '"' && s[i] != '\0')
 				++i;
 		}
-		if (s[i] == c)
+		if (s[i] == c && ((i > 1 && s[i - 1] == '\\' && s[i - 2] == '\\') || (i > 0 && s[i - 1] != '\\')))
 			return ((char*)s + i);
 		++i;
 	}
@@ -164,5 +164,26 @@ char	*ms_strmultichr(const char *s, const char *symbols)
 		}
 		++i;
 	}
+	return (0);
+}
+
+/*
+**  strchr that skips escaped symbol
+*/
+
+char	*ms_bs_strchr(const char *s, int c)
+{
+	int		i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == c)
+			if (((i > 1 && !(s[i - 2] == '\\') && (s[i - 1] == '\\')) || !(i > 0 && (s[i - 1] == '\\'))))
+				return ((char *)s + i);
+		++i;
+	}
+	if (c == '\0')
+		return ((char *)s + i);
 	return (0);
 }
