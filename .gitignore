@@ -5,3 +5,4 @@ test/
 minishell
 libft.a
 CMakeLists.txt
+bugs.txt

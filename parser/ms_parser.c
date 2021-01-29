@@ -59,24 +59,26 @@ static int	get_word(const char *cmd_line, char **cmd, int i)
 		quotes_flag = 1;
 	else if (cmd_line[i] == '"')
 		quotes_flag = 2;
-	while (1)
+	if (ft_strchr("<>", cmd_line[i]) && !is_symb_esc(cmd_line, i))
 	{
 		++i;
-		if ((!quotes_flag && ft_strchr(" ;|\0", cmd_line[i - 1])) || cmd_line[i - 1] == '\0')
+		*cmd = ft_substr(cmd_line, start, i - start);
+		return (i);
+	}
+	while (cmd_line[i])
+	{
+		if (!quotes_flag && ft_strchr("<> |;", cmd_line[i]))
 			break ;
+		if (!quotes_flag && cmd_line[i] == '\'')
+			quotes_flag = 1;
+		else if (!quotes_flag && cmd_line[i] == '"')
+			quotes_flag = 2;
 		if ((quotes_flag == 1 && cmd_line[i] == '\'') || (quotes_flag == 2 && cmd_line[i] == '"'))
 			quotes_flag = 0;
-		else
-		{
-			if (!quotes_flag && (cmd_line[i] == '\''))
-				quotes_flag = 1;
-			else if (!quotes_flag && (cmd_line[i] == '"'))
-				quotes_flag = 2;
-		}
+		++i;
 	}
-	*cmd = malloc(sizeof(char) * (i - start));
-	ms_strlcpy(*cmd, cmd_line, i, start);
-	return (i - 1);
+	*cmd = ft_substr(cmd_line, start, i - start);
+	return (i);
 }
 
 /*
@@ -90,9 +92,12 @@ static int	count_args(const char *cmd_line, int i)
 	args_num = 1;
 	while (cmd_line[i] != '\0' && cmd_line[i] != ';' && cmd_line[i] != '|')
 	{
-		if (cmd_line[i] == ' ')
+		if (cmd_line[i] == ' ' || (ft_strchr("<>", cmd_line[i]) && !is_symb_esc(cmd_line, i)))
 		{
 			i = skip_spaces(cmd_line, i);
+			if (ft_strchr("<>", cmd_line[i]))
+				if (!ft_strchr(";\0|", cmd_line[i]))
+					++args_num;
 			++args_num;
 		}
 		++i;
@@ -104,7 +109,7 @@ static int	count_args(const char *cmd_line, int i)
 **  A function that creates an array with arguments
 */
 
-static int	get_args(const char *cmd_line, char ***args, int i, t_list *env_list)
+static int	get_args(const char *cmd_line, char ***args, int i)
 {
 	int		arg_index;
 
@@ -131,7 +136,7 @@ static void	parse_cmd(const char *cmd_line, int *i, t_cmd *cmd, t_list *env_list
 	*i = get_word(cmd_line, &cmd->cmd, *i);
 	*i = skip_spaces(cmd_line, *i);
 	if (!(cmd_line[*i] == '\0' || cmd_line[*i] == ';' || cmd_line[*i] == '|'))
-		*i = get_args(cmd_line, &cmd->args, *i, env_list);
+		*i = get_args(cmd_line, &cmd->args, *i);
 	else
 		cmd->args = NULL;
 	cmd->end = cmd_line[*i];
