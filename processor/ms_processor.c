@@ -132,25 +132,6 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 }
 
 /*
-**  A function that checks quote escape
-*/
-
-static int		is_quote_escaped(const char *str, int i)
-{
-	if (i > 1)
-	{
-		if (str[i - 1] == '\\' && str[i - 2] == '\\')
-			return (0);
-		else if (str[i - 1] == '\\')
-			return (1);
-	}
-	else if (i > 0)
-		if (str[i - 1] == '\\')
-			return (1);
-	return (0);
-}
-
-/*
 **  A function that gets coordinates of quotes in string
 */
 
@@ -162,9 +143,9 @@ static t_coords	get_quotes_coords(const char *str, int i)
 	coords.type = 0;
 	while (str[coords.start])
 	{
-		if (str[coords.start] == '\'' && !is_quote_escaped(str, coords.start))
+		if (str[coords.start] == '\'' && !is_symb_esc(str, coords.start))
 			coords.type = 1;
-		else if (str[coords.start] == '"' && !is_quote_escaped(str, coords.start))
+		else if (str[coords.start] == '"' && !is_symb_esc(str, coords.start))
 			coords.type = 2;
 		if (coords.type)
 			break ;
@@ -309,9 +290,9 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 	while (cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
-		handle_bslash(&cmd->args[i]);
 		if (swap_quotes(&cmd->args[i], env_list))
 			return (1);
+		handle_bslash(&cmd->args[i]);
 		++i;
 	}
 	return (0);

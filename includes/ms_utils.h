@@ -27,5 +27,6 @@ char	*safe_strjoin(char **str1, const char *str2);
 int		ms_strswap(char **str, const char *inject, int start, int len);
 char	*ft_strchr_quotes(const char *s, int c);
 char	*ms_bs_strchr(const char *s, int c);
+int		is_symb_esc(const char *str, int i);
 
 # endif
