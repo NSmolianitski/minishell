@@ -24,5 +24,7 @@ int		change_var_content(t_list *lst, char *var_name, char *content);
 int		find_var(t_list *lst, char *var_name);
 void	*rm_var(t_list **lst, char *var_name);
 char	*safe_strjoin(char **str1, const char *str2);
+char	*ft_strchr_quotes(const char *s, int c);
+int		ms_strswap(char **str, const char *inject, int start, int len);
 
 # endif

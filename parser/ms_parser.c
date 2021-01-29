@@ -9,38 +9,13 @@ static char *find_env_in_word(const char *cmd, char *env_start)
 	char	*env;
 	int 	i;
 
-	env_end = ft_strchr(env_start, '$');
+	env_end = ms_strmultichr(env_start, "$'\"");
 	if (!env_end)
 		i = ft_strlen(env_start);
 	else
 		i = env_end - env_start;
 	env = ft_substr(cmd, (env_start - cmd), i);
 	return (env);
-}
-
-/*
-**  A function that swaps command with env variable if variable exists
-*/
-
-static int	swap_env_if_exists(char **cmd, char **result, char *content)
-{
-	char	*index;
-	char	*tmp;
-
-	*result = ft_substr(*cmd, 0, (ft_strchr(*cmd, '$') - *cmd));
-	tmp = *result;
-	*result = ft_strjoin(*result, content);
-	free(tmp);
-	free(content);
-	index = ft_strchr(ft_strchr(*cmd, '$') + 1, '$');
-	if (!index)
-		return (0);
-	tmp = *result;
-	*result = ft_strjoin(*result, index);
-	free(tmp);
-	free(*cmd);
-	*cmd = *result;
-	return (1);
 }
 
 /*
@@ -52,25 +27,20 @@ void	swap_env(char **cmd, t_list *env_list)
 	char	*env_start;
 	char	*content;
 	char	*tmp;
-	char	*result;
 
-	while (ft_strchr(*cmd, '$'))
+	while (ft_strchr_quotes(*cmd, '$'))
 	{
-		env_start = ft_strchr(*cmd, '$');
+		env_start = ft_strchr_quotes(*cmd, '$');
 		tmp = find_env_in_word(*cmd, env_start + 1);
 		if (!ms_strcmp(tmp, "?"))
 			content = ft_itoa(g_exit_status);
 		else
 			content = get_var_content(env_list, tmp);
-		free(tmp);
 		if (!content)
 			content = ft_strdup("");
-		if (!swap_env_if_exists(cmd, &result, content))
-		{
-			free(*cmd);
-			*cmd = result;
-			break;
-		}
+		ms_strswap(cmd, content, (ft_strchr_quotes(*cmd, '$') - *cmd), ft_strlen(tmp));
+		free(tmp);
+		free(content);
 	}
 }
 

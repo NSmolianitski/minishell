@@ -152,6 +152,7 @@ int				main(int argc, char **argv, char **envp)
 		}
 		processor(cmd_arr, &env_list);			//execute commands
 		parser_free(&cmd_line, cmd_arr);		//free commands array and command line
+//		exit(g_exit_status);					//!for testing!
 	}
 	return (0);
 }

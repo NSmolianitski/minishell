@@ -1,4 +1,7 @@
 .idea/
 .DS_Store
 cmake-build-debug/
+test/
+minishell
+libft.a
 CMakeLists.txt

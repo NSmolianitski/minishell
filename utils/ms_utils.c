@@ -91,3 +91,78 @@ int		ms_strcmp(const char *s1, const char *s2)
 	else
 		return (-1);
 }
+
+/*
+**  A function like strchr, but ignores content in quotes
+*/
+
+char	*ft_strchr_quotes(const char *s, int c)
+{
+	int		i;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		if (s[i] == '\'')
+		{
+			++i;
+			while (s[i] != '\'' && s[i] != '\0')
+				++i;
+		}
+		else if (s[i] == '"')
+		{
+			++i;
+			while (s[i] != '"' && s[i] != '\0')
+				++i;
+		}
+		if (s[i] == c)
+			return ((char*)s + i);
+		++i;
+	}
+	if (c == '\0')
+		return ((char*)s + i);
+	return (0);
+}
+
+/*
+**  A function that swaps string part by coordinates
+*/
+
+int		ms_strswap(char **str, const char *inject, int start, int len)
+{
+	char	*result;
+	char	*tmp;
+
+	result = ft_substr(*str, 0, start);
+	result = safe_strjoin(&result, inject);
+	tmp = ft_substr(*str, start + 1 + len, ft_strlen(&(*str)[start + len]));
+	result = safe_strjoin(&result, tmp);
+	free(tmp);
+	free(*str);
+	*str = result;
+	return (1);
+}
+
+/*
+**  strchr with several symbols
+*/
+
+char	*ms_strmultichr(const char *s, const char *symbols)
+{
+	int		i;
+	int 	j;
+
+	i = 0;
+	while (s[i] != '\0')
+	{
+		j = 0;
+		while (symbols[j])
+		{
+			if (s[i] == symbols[j])
+				return ((char *) s + i);
+			++j;
+		}
+		++i;
+	}
+	return (0);
+}

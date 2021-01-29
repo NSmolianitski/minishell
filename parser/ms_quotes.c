@@ -117,6 +117,13 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 			}
 			tmp2 = parse_env(&str[i]);
 			env = get_var_content(env_list, tmp2);
+			if (!env)
+			{
+				while (str[i] != '"')
+					++i;
+				++i;
+				continue ;
+			}
 			free(tmp2);
 			tmp2 = NULL;
 			tmp2 = tmp;

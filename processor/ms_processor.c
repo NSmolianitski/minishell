@@ -174,7 +174,7 @@ static char	*prepare_quotes_str(char *str, t_list *env_list, t_coords coords, in
 	char	*tmp;
 
 	parsed_quotes = ft_substr(str, coords.start, (coords.end + 1 - coords.start));
-	if (!ms_strcmp(parsed_quotes, "'") || !ms_strcmp(parsed_quotes, "\""))
+	if (!ms_strcmp(parsed_quotes, "'") || !ms_strcmp(parsed_quotes, "\"") || (parsed_quotes[ft_strlen(parsed_quotes) - 1] != '\'' && parsed_quotes[ft_strlen(parsed_quotes) - 1] != '"'))
 		return (NULL);
 	tmp = parsed_quotes;
 	parsed_quotes = parse_qoutes(parsed_quotes, env_list);
@@ -212,7 +212,11 @@ static int	swap_quotes(char **str, t_list *env_list)
 			free(tmp2);
 			tmp2 = prepare_quotes_str(tmp, env_list, coords, i);
 			if (!tmp2)
+			{
+				free(tmp);
+				free(tmp2);
 				return (1);
+			}
 			safe_strjoin(&(*str), tmp2);
 			i = coords.end + 1;
 		}
@@ -231,7 +235,7 @@ static int	swap_quotes(char **str, t_list *env_list)
 static int	check_quotes(t_cmd *cmd, t_list *env_list)
 {
 	int 		i;
-
+	swap_env(&cmd->cmd, env_list);
 	if (swap_quotes(&cmd->cmd, env_list))
 		return (1);
 	if (!cmd->args)
