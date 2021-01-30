@@ -275,52 +275,6 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 }
 
 /*
-**  A function that replaces file descriptors for redirects
-*/
-
-static void redir_prepare(char *file, int stream)
-{
-	int		temp_fd;
-	char	buff[1000];
-
-	if (stream == 3)
-	{
-		temp_fd = open(file, O_RDWR | O_CREAT, 0666);
-		read(temp_fd, buff, 999);
-		dup2(temp_fd, 1);
-	}
-	else
-	{
-		temp_fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0666);
-		dup2(temp_fd, stream);
-	}
-	close(temp_fd);
-}
-
-/*
-**  A function that handles redirects if they exists
-*/
-
-static void handle_redirects(t_cmd *cmd)
-{
-	int	i;
-
-	if (!cmd->args)
-		return ;
-	i = 0;
-	while (cmd->args[i])
-	{
-		if (!ms_strcmp(">", cmd->args[i]) && ms_strcmp(">", cmd->args[i + 1]))
-			redir_prepare(cmd->args[i + 1], 1);
-		else if (!ms_strcmp("<", cmd->args[i]))
-			redir_prepare(cmd->args[i + 1], 0);
-		else if (!ms_strcmp(">", cmd->args[i]) && !ms_strcmp(">", cmd->args[i + 1]))
-			redir_prepare(cmd->args[i + 1], 3);
-		++i;
-	}
-}
-
-/*
 **  A function that checks what command to execute
 */
 

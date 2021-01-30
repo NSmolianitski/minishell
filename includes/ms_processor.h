@@ -12,5 +12,6 @@ typedef struct	s_coords
 
 int		g_exit_status;
 void	processor(t_cmd	**cmd_arr, t_list **env_list);
+void	handle_redirects(t_cmd *cmd);
 
 #endif
