@@ -6,7 +6,7 @@
 /*   By: kmichiko <kmichiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/23 20:36:13 by kmichiko          #+#    #+#             */
-/*   Updated: 2021/01/25 21:36:16 by kmichiko         ###   ########.fr       */
+/*   Updated: 2021/01/30 22:04:39 by kmichiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,7 +98,7 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 	{
 		if (str[i] == '\\')
 		{
-			tmp = ft_strjoin(result, parse_backslash(&str[i], &offset));
+			tmp = ft_strjoin(result, parse_backslash(&str[i + 1], &offset));
 			if (result)
 			{
 				free(result);
