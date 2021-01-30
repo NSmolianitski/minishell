@@ -55,10 +55,6 @@ static int	get_word(const char *cmd_line, char **cmd, int i)
 
 	start = i;
 	quotes_flag = 0;
-	if (cmd_line[i] == '\'')
-		quotes_flag = 1;
-	else if (cmd_line[i] == '"')
-		quotes_flag = 2;
 	if (ft_strchr("<>", cmd_line[i]) && !is_symb_esc(cmd_line, i))
 	{
 		++i;
@@ -69,12 +65,16 @@ static int	get_word(const char *cmd_line, char **cmd, int i)
 	{
 		if (!quotes_flag && ft_strchr("<> |;", cmd_line[i]))
 			break ;
+		if ((quotes_flag == 1 && cmd_line[i] == '\'') || (quotes_flag == 2 && cmd_line[i] == '"'))
+		{
+			quotes_flag = 0;
+			++i;
+			continue ;
+		}
 		if (!quotes_flag && cmd_line[i] == '\'')
 			quotes_flag = 1;
 		else if (!quotes_flag && cmd_line[i] == '"')
 			quotes_flag = 2;
-		if ((quotes_flag == 1 && cmd_line[i] == '\'') || (quotes_flag == 2 && cmd_line[i] == '"'))
-			quotes_flag = 0;
 		++i;
 	}
 	*cmd = ft_substr(cmd_line, start, i - start);
@@ -226,6 +226,8 @@ t_cmd	**parser(const char *cmd_line)
 	if (j)
 		return (0);
 	j = count_cmds(cmd_line);
+	if (!j)
+		return (0);
 	cmd_arr = malloc(sizeof(t_cmd *) * (j + 1));
 	k = 0;
 	while (k < j)
