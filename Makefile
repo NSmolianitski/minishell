@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: kmichiko <kmichiko@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2021/01/23 18:48:24 by kmichiko          #+#    #+#              #
-#    Updated: 2021/01/25 21:00:57 by kmichiko         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 NAME		=	minishell
 CC			=	gcc
 SRC			=	$(wildcard processor/*.c \
@@ -27,7 +15,7 @@ HEADERS		=	includes/get_next_line.h \
 				libft/libft.h
 
 OBJ			=	$(SRC:.c=.o)
-FLAGS		=	-Wall -Wextra -Werror
+FLAGS		=	-Werror -Wextra -Werror
 LIBFTDIR	=	libft
 LIBFTLIB	=	libft.a
 INCL		=	./includes
