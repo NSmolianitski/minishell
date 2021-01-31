@@ -11,14 +11,14 @@
 - ~~export~~ :white_check_mark:
 - ~~unset~~ :white_check_mark:
 - ~~env~~ :white_check_mark:
-- exit
+- exit (обработать неверные аргументы exit'a)
 - ~~вызов функций bash через абсолютный путь (ls/cat/grep и т.д.)~~ :white_check_mark:
 
 ### Другое:
 
 - ~~;~~ :white_check_mark:
 - ~~кавычки~~ :white_check_mark:
-- редиректы (< > >>)
+- ~~редиректы (< > >>)~~ :white_check_mark:
 - пайпы (|)
 - ~~переменные окружения~~ :white_check_mark:
 - $? (нужно проверить все команды!)

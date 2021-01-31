@@ -98,7 +98,9 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 	{
 		if (str[i] == '\\')
 		{
-			tmp = ft_strjoin(result, parse_backslash(&str[i + 1], &offset));
+			tmp2 = parse_backslash(&str[i + 1], &offset);
+			tmp = ft_strjoin(result, tmp2);
+			free(tmp2);
 			if (result)
 			{
 				free(result);
