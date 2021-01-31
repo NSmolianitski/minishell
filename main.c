@@ -9,7 +9,7 @@
 **  A function that prints shell tag
 */
 
-static void	print_shell_tag(void)
+void	print_shell_tag(void)
 {
 	write(1, "\033[32m", ft_strlen("\033[32m")); //output color
 	write(1, "minishell$ ", 11);
@@ -142,10 +142,15 @@ int				main(int argc, char **argv, char **envp)
 	argv += 0;
 
 	g_exit_status = 0;							//set exit status to zero
+	g_signal_flag = 0;
+
 	make_env_list(envp, &env_list);				//create environment variable list from envp
+	signal(SIGINT, sig_int);
+	signal(SIGQUIT, sig_quit);
 	while (1)
 	{
-		print_shell_tag();						//print shell tag
+		print_shell_tag();					//print shell tag
+		g_signal_flag = 0;
 		cmd_line = get_cmd_line();				//read command line and put it to a variable
 		cmd_arr = parser(cmd_line);	//send command line to parser (and get commands array)
 		if (!cmd_arr)							//if no commands -> continue

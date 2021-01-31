@@ -97,7 +97,11 @@ static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 	if (!pid)
 		exit (execve(cmd->cmd, args, envp));
 	else
+	{
+		g_signal_flag = -1;
 		wait(&status);
+
+	}
 	free_strs_arr(&envp);
 	free_strs_arr(&args);
 	if (status > 256)

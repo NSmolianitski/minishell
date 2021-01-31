@@ -6,7 +6,7 @@
 /*   By: kmichiko <kmichiko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/01/23 20:36:13 by kmichiko          #+#    #+#             */
-/*   Updated: 2021/01/30 22:04:39 by kmichiko         ###   ########.fr       */
+/*   Updated: 2021/01/31 14:39:12 by kmichiko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,6 @@
 #include "libft.h"
 #include "ms_utils.h"
 #include "ms_parser.h"
-
-/*
-** parse env variables
-** For example, $test
-*/
 
 char	*parse_env(char *str)
 {
@@ -44,14 +39,6 @@ char	*parse_env(char *str)
 	result[j] = '\0';
 	return (result);
 }
-
-/*
-** parse slash
-** for example,
-** // ---> /
-** /  ---> /
-** /' ---> '
-*/
 
 char	*parse_backslash(char *str, int *offset)
 {
@@ -87,9 +74,12 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 	char	*env;
 	char	*tmp;
 	char	*tmp2;
+	int		k;
 
 	env = NULL;
 	result = NULL;
+	tmp = NULL;
+	tmp2 = NULL;
 	offset = 0;
 	j = 0;
 	i = 0;
@@ -100,7 +90,11 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 		{
 			tmp2 = parse_backslash(&str[i + 1], &offset);
 			tmp = ft_strjoin(result, tmp2);
-			free(tmp2);
+			if (tmp2)
+			{
+				free(tmp2);
+				tmp2 = NULL;
+			}
 			if (result)
 			{
 				free(result);
@@ -146,7 +140,7 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 		}
 		else
 		{
-			int k = 0;
+			k = 0;
 			j = 0;
 			while (str[i + j] != '\0' && str[i + j] != '\\' && str[i + j] != '$' && str[i + j] != '"')
 				j++;
@@ -162,12 +156,18 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 			free(tmp2);
 			tmp2 = NULL;
 			i += j;
+			if (tmp)
+			{
+				free(tmp);
+				tmp = NULL;
+			}
 		}
 	}
-	free(tmp);
-	tmp = NULL;
-	free(env);
-	env = NULL;
+	if (env)
+	{
+		free(env);
+		env = NULL;
+	}
 	return (result);
 }
 
