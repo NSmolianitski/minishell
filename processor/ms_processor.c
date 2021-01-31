@@ -322,30 +322,32 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 }
 
 /*
-**  A function that executes command
+**  Function that restores stdout and stdin
 */
 
-static void	execute_cmd(t_cmd *cmd, t_list **env_list)
+static void restore_streams(int stdout_fd, int stdin_fd)
 {
-	int	stdout_fd;
-	int	stdin_fd;
-
-	stdin_fd = dup(0);
-	stdout_fd = dup(1);
-	if (check_quotes(cmd, *env_list))
-	{
-		print_error(MLA, "MULTILINE", 5);
-		g_exit_status = 1;
-	}
-	else if (!check_cmd(cmd, env_list) && ms_strcmp(cmd->cmd, ""))
-	{
-		print_error(CNF, cmd->cmd, 1);
-		g_exit_status = 127;
-	}
 	dup2(stdin_fd, 0);
 	dup2(stdout_fd, 1);
 	close(stdin_fd);
 	close(stdout_fd);
+}
+
+/*
+**  A function that executes command
+*/
+
+static void	execute_cmd(t_cmd *cmd, t_list **env_list, int *stdfd)
+{
+	if (check_quotes(cmd, *env_list))
+	{
+		print_error(MLA, "MULTILINE", 5);
+		g_exit_status = 1;
+	} else if (!check_cmd(cmd, env_list) && ms_strcmp(cmd->cmd, ""))
+	{
+		print_error(CNF, cmd->cmd, 1);
+		g_exit_status = 127;
+	}
 }
 
 /*
@@ -355,16 +357,33 @@ static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 void		processor(t_cmd	**cmd_arr, t_list **env_list)
 {
 	int 	i;
-	int 	is_pipe;
+	int		pid;
+	int 	status;
+	int		stdfd[2];
+	int		fd[2];
 
+	stdfd[0] = dup(0);
+	stdfd[1] = dup(1);
 	i = 0;
-	is_pipe = 0;
 	while (cmd_arr[i])
 	{
 		if (cmd_arr[i]->end == '|')
-			is_pipe = 1;
-		else if ((cmd_arr[i]->end == ';' || cmd_arr[i]->end == '\0') && !is_pipe)
-			execute_cmd(cmd_arr[i], env_list);
+		{
+			pipe(fd);
+			pid = fork();
+			if (!pid)
+			{
+				dup2(fd[0], 0);
+				close(fd[0]);
+				close(fd[1]);
+				execute_cmd(cmd_arr[i], env_list, stdfd);
+				exit(0);
+			}
+		}
+		else
+			execute_cmd(cmd_arr[i], env_list, stdfd);
+//		while (cmd_arr[i]->end == '|')
+//			++i;
 		++i;
 	}
 }
