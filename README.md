@@ -22,6 +22,6 @@
 - пайпы (|)
 - ~~переменные окружения~~ :white_check_mark:
 - $? (нужно проверить все команды!)
-- сигналы (ctrl + C, ctrl + D, ctrl + \\)
+- сигналы (ctrl + C, ctrl + D, ctrl + \\) :white_check_mark:
 - обработать \ без кавычек
 - запуск команд через $PATH :white_check_mark:

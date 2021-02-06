@@ -35,11 +35,11 @@ char	*get_path(char *cmd, t_list **env_list)
 		}
 		else
 		{
-			free_arr(path);
+			//free_arr(path);
 			return (exec_path);
 		}
 		i++;
 	}
-	free_arr(path);
+	//free_arr(path);
 	return (cmd);
 }
