@@ -22,20 +22,30 @@ void	print_shell_tag(void)
 
 static char	*get_cmd_line(void)
 {
-	char	buff[1000];
+	char	buff[2];
 	char	*cmd_line;
 	char	*tmp;
 	int		read_bytes;
+	int		flag;
 
 	cmd_line = ft_strdup("");
-	while ((read_bytes = read(0, buff, 999)))
+	flag = 0;
+	while ((read_bytes = read(0, buff, 1)) >= 0)
 	{
+		if (read_bytes == 0)
+		{
+			if (!flag)
+				return (ft_strdup("exit"));
+			write(1, "  \b\b", 4);
+			continue ;
+		}
+		flag = 1;
 		if (buff[read_bytes - 1] == '\n')
 			buff[read_bytes - 1] = '\0';
 		tmp = cmd_line;
 		cmd_line = ft_strjoin(cmd_line, buff);
 		free(tmp);
-		if (buff[read_bytes - 1] == '\0')
+		if (read_bytes > 0 && buff[read_bytes - 1] == '\0')
 			break ;
 	}
 	return (cmd_line);
