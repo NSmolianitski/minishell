@@ -95,7 +95,7 @@ static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 		return (0);
 	}
 	if (!pid)
-		exit (execve(cmd->cmd, args, envp));
+		exit (execve(get_path(cmd->cmd, env_list), args, envp));
 	else
 	{
 		g_signal_flag = -1;
