@@ -337,7 +337,7 @@ static void restore_streams(int stdout_fd, int stdin_fd)
 **  A function that executes command
 */
 
-static void	execute_cmd(t_cmd *cmd, t_list **env_list, int *stdfd)
+static void	execute_cmd(t_cmd *cmd, t_list **env_list)
 {
 	if (check_quotes(cmd, *env_list))
 	{
@@ -351,39 +351,82 @@ static void	execute_cmd(t_cmd *cmd, t_list **env_list, int *stdfd)
 }
 
 /*
-**  Functions in processor executes sequently (pipe commands executes together)
+**  Functions that handles pipes
+*/
+
+static void handle_pipes(t_cmd **cmd_arr, t_list **env_list, int pipes_num, int index)
+{
+	int i;
+	int pid;
+	int status;
+	int fd[2];
+	int old_fd[2];
+
+	i = 0;
+	while (i <= pipes_num)
+	{
+		pipe(fd);
+		pid = fork();
+		if (!pid)
+		{
+			if (i)
+			{
+				dup2(old_fd[0], 0);
+				close(old_fd[0]);
+				close(old_fd[1]);
+			}
+			if (i != pipes_num)
+			{
+				dup2(fd[1], 1);
+				close(fd[0]);
+				close(fd[1]);
+			}
+			execute_cmd(cmd_arr[index + i], env_list);
+			exit(g_exit_status);
+		}
+		else
+		{
+			if (i)
+			{
+				close(old_fd[0]);
+				close(old_fd[1]);
+			}
+			if (i != pipes_num)
+			{
+				old_fd[0] = fd[0];
+				old_fd[1] = fd[1];
+			}
+			wait(&status);
+		}
+		++i;
+	}
+	close(old_fd[0]);
+	close(old_fd[1]);
+}
+
+/*
+**  Functions in processor executes sequently (pipe commands execute together)
 */
 
 void		processor(t_cmd	**cmd_arr, t_list **env_list)
 {
 	int 	i;
-	int		pid;
-	int 	status;
-	int		stdfd[2];
-	int		fd[2];
+	int		pipes_num;
 
-	stdfd[0] = dup(0);
-	stdfd[1] = dup(1);
 	i = 0;
 	while (cmd_arr[i])
 	{
 		if (cmd_arr[i]->end == '|')
 		{
-			pipe(fd);
-			pid = fork();
-			if (!pid)
-			{
-				dup2(fd[0], 0);
-				close(fd[0]);
-				close(fd[1]);
-				execute_cmd(cmd_arr[i], env_list, stdfd);
-				exit(0);
-			}
+			pipes_num = i;
+			while (cmd_arr[pipes_num]->end == '|')
+				++pipes_num;
+			pipes_num -= i;
+			handle_pipes(cmd_arr, env_list, pipes_num, i);
+			i += pipes_num;
 		}
 		else
-			execute_cmd(cmd_arr[i], env_list, stdfd);
-//		while (cmd_arr[i]->end == '|')
-//			++i;
+			execute_cmd(cmd_arr[i], env_list);
 		++i;
 	}
 }

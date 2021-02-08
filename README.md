@@ -19,9 +19,9 @@
 - ~~;~~ :white_check_mark:
 - ~~кавычки~~ :white_check_mark:
 - ~~редиректы (< > >>)~~ :white_check_mark:
-- пайпы (|)
+- ~~пайпы (|)~~ :white_check_mark:
 - ~~переменные окружения~~ :white_check_mark:
 - $? (нужно проверить все команды!)
-- сигналы (ctrl + C, ctrl + D, ctrl + \\) :white_check_mark:
-- обработать \ без кавычек
-- запуск команд через $PATH :white_check_mark:
+- ~~сигналы (ctrl + C, ctrl + D, ctrl + \\)~~ :white_check_mark:
+- ~~обработать \ без кавычек~~ :white_check_mark:
+- ~~запуск команд через $PATH~~ :white_check_mark:
