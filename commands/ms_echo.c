@@ -30,7 +30,8 @@ int		ms_echo(char **args)
 		++i;
 		if (!args[i])
 			break ;
-		write(1, " ", 1);
+		if (ms_strcmp(args[i - 1], ""))
+			write(1, " ", 1);
 	}
 	is_n_option(n_option);
 	return (0);

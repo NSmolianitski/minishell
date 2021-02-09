@@ -37,6 +37,12 @@ void	print_list(t_list *lst, int export)
 char	*get_var_content(t_list *lst, char *var_name)
 {
 	char	*content;
+
+	if (!var_name)
+	{
+		content = ft_strdup("$");
+		return (content);
+	}
 	while (lst)
 	{
 		if (!ms_strcmp(lst->name, var_name))

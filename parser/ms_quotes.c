@@ -122,7 +122,8 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 			result = tmp;
 			tmp = NULL;
 			tmp2 = parse_env(&str[i]);
-			i += ft_strlen(tmp2);
+			if (str[i] != '"')
+				i += ft_strlen(tmp2);
 			free(tmp2);
 			tmp2 = NULL;
 		}

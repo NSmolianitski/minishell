@@ -32,7 +32,7 @@ void	swap_env(char **cmd, t_list *env_list)
 	{
 		env_start = ft_strchr_quotes(*cmd, '$');
 		tmp = find_env_in_word(*cmd, env_start + 1);
-		if (!ms_strcmp(tmp, "?"))
+		if (ft_strchr(tmp, '?'))
 			content = ft_itoa(g_exit_status);
 		else
 			content = get_var_content(env_list, tmp);

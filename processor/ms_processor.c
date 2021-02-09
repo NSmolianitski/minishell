@@ -91,23 +91,23 @@ static int	try_external_cmd(t_cmd *cmd, t_list **env_list)
 	pid = fork();
 	if (pid == -1)
 	{
-		print_line("Failed to create child process :(", 1);
+		print_line("Failed to create child process :(\n", 1);
 		return (0);
 	}
 	if (!pid)
-		exit (execve(get_path(cmd->cmd, env_list), args, envp));
+		exit(execve(get_path(cmd->cmd, env_list), args, envp));
 	else
 	{
 		g_signal_flag = -1;
 		wait(&status);
-
 	}
 	free_strs_arr(&envp);
 	free_strs_arr(&args);
-	if (status > 256)
+	status = WEXITSTATUS(status);
+	if (status == 255)
 		return (0);
 	else if (status > 0)
-		g_exit_status = 1;
+		g_exit_status = status;
 	return (1);
 }
 
