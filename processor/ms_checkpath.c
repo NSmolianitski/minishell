@@ -1,7 +1,7 @@
 #include "ms_processor.h"
 #include "libft.h"
 
-void	free_arr(char **path)
+void	free_array(char **path)
 {
 	int i;
 

@@ -1,0 +1,13 @@
+ech''o test
+>> LEAK
+>> multiline error
+
+export test="echo test"
+$test
+>> command not found
+
+cat test.txt > test2.txt
+echo test > test.txt
+>> зависает.
+
+

@@ -3,6 +3,15 @@
 #include "ms_utils.h"
 #include "ms_parser.h"
 
+void	free_arr(char *tmp)
+{
+	if (tmp)
+	{
+		free(tmp);
+		tmp = NULL;
+	}
+}
+
 char	*parse_env(char *str)
 {
 	int		i;
@@ -78,27 +87,15 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 		{
 			tmp2 = parse_backslash(&str[i + 1], &offset);
 			tmp = ft_strjoin(result, tmp2);
-			if (tmp2)
-			{
-				free(tmp2);
-				tmp2 = NULL;
-			}
-			if (result)
-			{
-				free(result);
-				result = NULL;
-			}
+			free_arr(tmp2);
+			free_arr(result);
 			result = tmp;
 			i += offset;
 		}
 		else if (str[i] == '$')
 		{
 			i++;
-			if (env)
-			{
-				free(env);
-				env = NULL;
-			}
+			free_arr(env);
 			tmp2 = parse_env(&str[i]);
 			env = get_var_content(env_list, tmp2);
 			if (!env)
@@ -108,24 +105,17 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 				++i;
 				continue ;
 			}
-			free(tmp2);
-			tmp2 = NULL;
+			free_arr(tmp2);
 			tmp2 = tmp;
 			tmp = ft_strjoin(result, env);
-			free(tmp2);
-			tmp2 = NULL;
-			if (result)
-			{
-				free(result);
-				result = NULL;
-			}
+			free_arr(tmp2);
+			free_arr(result);
 			result = tmp;
 			tmp = NULL;
 			tmp2 = parse_env(&str[i]);
 			if (str[i] != '"')
 				i += ft_strlen(tmp2);
-			free(tmp2);
-			tmp2 = NULL;
+			free_arr(tmp2);
 		}
 		else
 		{
@@ -142,21 +132,12 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 			tmp[k] = '\0';
 			tmp2 = result;
 			result = ft_strjoin(result, tmp);
-			free(tmp2);
-			tmp2 = NULL;
+			free_arr(tmp2);
 			i += j;
-			if (tmp)
-			{
-				free(tmp);
-				tmp = NULL;
-			}
+			free_arr(tmp);
 		}
 	}
-	if (env)
-	{
-		free(env);
-		env = NULL;
-	}
+	free_arr(env);
 	return (result);
 }
 
