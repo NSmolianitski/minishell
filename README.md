@@ -11,7 +11,7 @@
 - ~~export~~ :white_check_mark:
 - ~~unset~~ :white_check_mark:
 - ~~env~~ :white_check_mark:
-- exit (обработать неверные аргументы exit'a)
+- ~~exit~~ :white_check_mark:
 - ~~вызов функций bash через абсолютный путь (ls/cat/grep и т.д.)~~ :white_check_mark:
 
 ### Другое:

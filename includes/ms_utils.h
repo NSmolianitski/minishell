@@ -9,6 +9,7 @@
 # define SNIP "string not in pwd:"
 # define HNS "HOME not set"
 # define MLA "\033[31mMULTILINE ATTACK!\nDon't try to break our shell with multilines! :(\033[0m"
+# define NAR "numeric argument required"
 
 # include <stddef.h>
 # include "libft.h"

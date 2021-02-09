@@ -315,22 +315,20 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 	else if (!ms_strcmp(cmd->cmd, "env"))
 		ms_env(*env_list);
 	else if (!ms_strcmp(cmd->cmd, "exit"))
-		ms_exit();
+		ms_exit(cmd);
 	else if (!try_external_cmd(cmd, env_list))
 		return (0);
 	return (1);
 }
 
 /*
-**  Function that restores stdout and stdin
+**  Function that closes two file descriptors
 */
 
-static void restore_streams(int stdout_fd, int stdin_fd)
+static void double_close(int in, int out)
 {
-	dup2(stdin_fd, 0);
-	dup2(stdout_fd, 1);
-	close(stdin_fd);
-	close(stdout_fd);
+	close(in);
+	close(out);
 }
 
 /*
