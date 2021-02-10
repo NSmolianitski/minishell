@@ -206,3 +206,13 @@ char	*ms_bs_strchr(const char *s, int c)
 		return ((char *)s + i);
 	return (0);
 }
+
+/*
+**  Function that makes free for two strings
+*/
+
+void	double_free(char *s1, char *s2)
+{
+	free(s1);
+	free(s2);
+}

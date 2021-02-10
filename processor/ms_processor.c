@@ -136,11 +136,15 @@ static t_coords	get_quotes_coords(const char *str, int i)
 		coords.end = coords.start + 1;
 		while (str[coords.end])
 		{
-			if ((coords.type == 1 && str[coords.end] == '\'') || (coords.type == 2 && str[coords.end] == '"'))
+			if ((coords.type == 1 && (str[coords.end] == '\'' && !is_symb_esc(str, coords.end))) || (coords.type == 2 && (str[coords.end] == '"' && !is_symb_esc(str, coords.end))))
 				break ;
 			++coords.end;
 		}
+		if (str[coords.end] == '\0')
+			coords.type = 3;
 	}
+	else
+		coords.type = 4;
 	return (coords);
 }
 
@@ -203,37 +207,35 @@ static int	swap_quotes(char **str, t_list *env_list)
 		while (tmp[i])
 		{
 			coords = get_quotes_coords(tmp, i);
+			if (coords.type == 3)
+			{
+				free(tmp);
+				return (1);
+			}
+			else if (coords.type == 4)
+			{
+				tmp2 = ft_substr(tmp, i, ft_strlen(tmp + i));
+				safe_strjoin(&(*str), tmp2);
+				double_free(tmp, tmp2);
+				return (0);
+			}
 			free(tmp2);
 			tmp2 = prepare_quotes_str(tmp, env_list, coords, i);
 			if (!tmp2)
 			{
 				free(tmp);
-				free(tmp2);
 				return (1);
 			}
 			safe_strjoin(&(*str), tmp2);
+			free(tmp2);
+			tmp2 = NULL;
 			i = coords.end + 1;
 		}
-		free(tmp);
-		free(tmp2);
+		double_free(tmp, tmp2);
 	}
 	else
 		swap_env(str, env_list);
 	return (0);
-}
-
-/*
-**  A function that checks quotes
-*/
-
-static void		quote_check(int *q_flag, const char *str, int i)
-{
-	if (str[i] == '\'' && !*q_flag)
-		*q_flag = 1;
-	else if (str[i] == '"' && !*q_flag)
-		*q_flag = 2;
-	else if ((*q_flag == 1 && str[i] == '\'') || (*q_flag == 2 && str[i] == '"'))
-		*q_flag = 0;
 }
 
 /*
@@ -245,16 +247,13 @@ static void		handle_bslash(char **str)
 	char	*tmp;
 	int 	i;
 	int 	str_diff;
-	int		q_flag;
 
 	tmp = ft_strdup(*str);
 	i = 0;
 	str_diff = 0;
-	q_flag = 0;
 	while (tmp[i])
 	{
-		quote_check(&q_flag, tmp, i);
-		if (tmp[i] == '\\' && !q_flag)
+		if (tmp[i] == '\\')
 		{
 			if (tmp[i + 1] == '\\')
 			{
@@ -264,6 +263,7 @@ static void		handle_bslash(char **str)
 			else
 				ms_strswap(str, "", (i - str_diff), 0);
 			++str_diff;
+			++i;
 		}
 		++i;
 	}
@@ -278,18 +278,18 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 {
 	int 		i;
 	swap_env(&cmd->cmd, env_list);
-	handle_bslash(&cmd->cmd);
 	if (swap_quotes(&cmd->cmd, env_list))
 		return (1);
+	handle_bslash(&cmd->cmd);
 	if (!cmd->args)
 		return (0);
 	i = 0;
 	while (cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
-		handle_bslash(&cmd->args[i]);
 		if (swap_quotes(&cmd->args[i], env_list))
 			return (1);
+		handle_bslash(&cmd->args[i]);
 		++i;
 	}
 	return (0);

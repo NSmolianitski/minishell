@@ -29,5 +29,6 @@ int		ms_strswap(char **str, const char *inject, int start, int len);
 char	*ft_strchr_quotes(const char *s, int c);
 char	*ms_bs_strchr(const char *s, int c);
 int		is_symb_esc(const char *str, int i);
+void	double_free(char *s1, char *s2);
 
 # endif
