@@ -301,13 +301,14 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 
 static int	check_cmd(t_cmd *cmd, t_list **env_list)
 {
+	g_exit_status = 0;
 	handle_redirects(cmd);
 	if (!ms_strcmp(cmd->cmd, "echo"))
-		ms_echo(cmd->args);
+		g_exit_status = ms_echo(cmd->args);
 	else if (!ms_strcmp(cmd->cmd, "cd"))
-		ms_cd(cmd->args, *env_list);
+		g_exit_status = ms_cd(cmd->args, *env_list);
 	else if (!ms_strcmp(cmd->cmd, "pwd"))
-		print_pwd();
+		g_exit_status = print_pwd();
 	else if (!ms_strcmp(cmd->cmd, "export"))
 		ms_export(cmd, env_list);
 	else if (!ms_strcmp(cmd->cmd, "unset"))

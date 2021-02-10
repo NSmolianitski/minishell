@@ -1,5 +1,6 @@
 #include "ms_utils.h"
 #include "ms_parser.h"
+#include "ms_processor.h"
 
 static void replace_var(t_cmd *cmd, t_list **env_list, char *name, int index)
 {
@@ -33,6 +34,7 @@ static void export_err(char *str)
 		print_error(NVI, "=", 3);
 	else
 		print_error(NVI, str, 3);
+	g_exit_status = 1;
 	free(str);
 }
 
@@ -48,7 +50,7 @@ static int is_valid_name(char *name)
 	i = 0;
 	while (name[i])
 	{
-		if (!ft_isalpha(name[i]) || !ft_isalnum(name[i]))
+		if (!ft_isalnum(name[i]))
 		{
 			export_err(name);
 			return (0);
@@ -100,6 +102,7 @@ void	ms_export(t_cmd *cmd, t_list **env_list)
 			new_lst = ft_lstnew(name, content);
 			ft_lstadd_back(env_list, new_lst);
 		}
+		g_exit_status = 0;
 		++k;
 	}
 }

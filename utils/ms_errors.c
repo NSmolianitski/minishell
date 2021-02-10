@@ -16,6 +16,13 @@ static void	write_ms_err_begin_export(char *str)
 	write(1, "': ", 3);
 }
 
+static void	write_ms_err_begin_unset(char *str)
+{
+	write(1, "minishell: unset: '", 19);
+	print_line(str, 1);
+	write(1, "': ", 3);
+}
+
 static void	write_ms_err_begin_exit(char *str)
 {
 	write(1, "minishell: exit: '", 18);
@@ -50,6 +57,8 @@ void	print_error(char *error, char *str, int err_type)
 		write_ms_err_begin_cd(str);
 	else if (err_type == 6)
 		write_ms_err_begin_exit(str);
+	else if (err_type == 7)
+		write_ms_err_begin_unset(str);
 	(!ms_strcmp(error, NSFD)) ? print_line(NSFD, 1) : 0;
 	(!ms_strcmp(error, CNF)) ? print_line(CNF, 1) : 0;
 	(!ms_strcmp(error, SES)) ? print_line(SES, 1) : 0;
