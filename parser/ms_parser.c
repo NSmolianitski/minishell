@@ -7,9 +7,10 @@ static char *find_env_in_word(const char *cmd, char *env_start)
 {
 	char	*env_end;
 	char	*env;
+	char	*tmp;
 	int 	i;
 
-	env_end = ms_strmultichr(env_start, "$'\"");
+	env_end = ms_strmultichr(env_start, "$'\"=_");
 	if (!env_end)
 		i = ft_strlen(env_start);
 	else
@@ -38,13 +39,20 @@ void	swap_env(char **cmd, t_list *env_list)
 		else
 			content = get_var_content(env_list, tmp);
 		if (!content)
-			content = ft_strdup("");
+		{
+			if (ft_strchr("+=", (*cmd)[1]))
+			{
+				free(tmp);
+				return ;
+			}
+			else
+				content = ft_strdup("");
+		}
 		len = ft_strlen(tmp);
 		if (ft_strnstr(*cmd, "$?", ft_strlen(*cmd)))
 			len = 1;
 		ms_strswap(cmd, content, (ft_strchr_quotes(*cmd, '$') - *cmd), len);
-		free(tmp);
-		free(content);
+		double_free(tmp, content);
 	}
 }
 

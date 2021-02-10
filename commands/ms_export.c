@@ -42,7 +42,7 @@ static int is_valid_name(char *name)
 {
 	int i;
 
-	if (!ft_isalpha(name[0]))
+	if (!ft_isalpha(name[0]) && name[0] != '_')
 	{
 		export_err(name);
 		return (0);
@@ -50,7 +50,7 @@ static int is_valid_name(char *name)
 	i = 0;
 	while (name[i])
 	{
-		if (!ft_isalnum(name[i]))
+		if (!ft_isalnum(name[i]) && name[i] != '_')
 		{
 			export_err(name);
 			return (0);
