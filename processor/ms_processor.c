@@ -187,10 +187,80 @@ static char	*prepare_quotes_str(char *str, t_list *env_list, t_coords coords, in
 }
 
 /*
+**  A function that reallocates array (makes new empty strings by index)
+*/
+
+static char	**realloc_arr(char **arr, int index, int add_size)
+{
+	char	**new_arr;
+	int		arr_len;
+	int 	i;
+
+	arr_len = 0;
+	if (arr)
+		while (arr[arr_len])
+			++arr_len;
+	new_arr = malloc(sizeof(char *) * (arr_len + add_size + 1));
+	new_arr[arr_len + add_size] = NULL;
+	if (!arr)
+		return (new_arr);
+	i = 0;
+	while (arr[i])
+	{
+		if (i >= index)
+			new_arr[i + add_size] = ft_strdup(arr[i]);
+		else
+			new_arr[i] = ft_strdup(arr[i]);
+		free(arr[i]);
+		++i;
+	}
+	free(arr);
+	return (new_arr);
+}
+
+/*
+**  A function that checks for multiword env
+*/
+
+static void check_multiword_env(t_cmd *cmd)
+{
+	char	**arr;
+	int		i;
+	int		j;
+
+	arr = ft_split(cmd->cmd, ' ');
+	if (!arr[0])
+	{
+		free(arr);
+		return ;
+	}
+	j = 0;
+	while (arr[j])
+		++j;
+	if (j == 1)
+	{
+		free_strs_arr(&arr);
+		return ;
+	}
+	free(cmd->cmd);
+	cmd->cmd = arr[0];
+	cmd->args = realloc_arr(cmd->args, 0, j - 1);
+	i = 1;
+	j = 0;
+	while (arr[i])
+	{
+		cmd->args[j] = arr[i];
+		++i;
+		++j;
+	}
+	free(arr);
+}
+
+/*
 **  A function that gets coordinates of quotes string and parses that string
 */
 
-static int	swap_quotes(char **str, t_list *env_list)
+static int	swap_quotes(char **str, t_list *env_list, t_cmd *cmd)
 {
 	t_coords	coords;
 	int 		i;
@@ -234,7 +304,10 @@ static int	swap_quotes(char **str, t_list *env_list)
 		double_free(tmp, tmp2);
 	}
 	else
+	{
 		swap_env(str, env_list);
+		check_multiword_env(cmd);
+	}
 	return (0);
 }
 
@@ -277,8 +350,7 @@ static void		handle_bslash(char **str)
 static int	check_quotes(t_cmd *cmd, t_list *env_list)
 {
 	int 		i;
-	swap_env(&cmd->cmd, env_list);
-	if (swap_quotes(&cmd->cmd, env_list))
+	if (swap_quotes(&cmd->cmd, env_list, cmd))
 		return (1);
 	handle_bslash(&cmd->cmd);
 	if (!cmd->args)
@@ -287,7 +359,7 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 	while (cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
-		if (swap_quotes(&cmd->args[i], env_list))
+		if (swap_quotes(&cmd->args[i], env_list, cmd))
 			return (1);
 		handle_bslash(&cmd->args[i]);
 		++i;

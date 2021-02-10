@@ -23,7 +23,7 @@ static char *find_env_in_word(const char *cmd, char *env_start)
 **  A function that swaps command with env variable
 */
 
-void	swap_env(char **cmd, t_list *env_list)
+void		swap_env(char **cmd, t_list *env_list)
 {
 	char	*env_start;
 	char	*content;
