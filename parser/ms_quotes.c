@@ -2,6 +2,7 @@
 #include "libft.h"
 #include "ms_utils.h"
 #include "ms_parser.h"
+#include "ms_processor.h"
 
 void	free_arr(char *tmp)
 {
@@ -20,10 +21,10 @@ char	*parse_env(char *str)
 
 	i = 0;
 	j = 0;
-	if (str[i] != '\0' && (ft_isalpha(str[i]) || str[i] == '_'))
+	if (str[i] != '\0' && (ft_isalpha(str[i]) || str[i] == '_' || str[i] == '?'))
 	{
 		i++;
-		while (str[i] != '\0' && (ft_isalnum(str[i]) || str[i] == '_'))
+		while (str[i] != '\0' && (ft_isalnum(str[i]) || str[i] == '_' || str[i] == '?'))
 			i++;
 	}
 	if (i == 0 || !(result = (char *)malloc((i + 1) * sizeof(char))))
@@ -62,6 +63,20 @@ char	*parse_backslash(char *str, int *offset)
 	return (result);
 }
 
+static char *get_exit_status_env(char *str)
+{
+	char	*tmp;
+	char	*tmp2;
+
+	tmp = ft_strdup(str);
+	tmp2 = ft_itoa(g_exit_status);
+	ms_strswap(&tmp, tmp2, 0, ft_strlen(str));
+	safe_strjoin(&tmp, str + 1);
+	free(tmp2);
+	tmp2 = NULL;
+	return (tmp);
+}
+
 char	*proccess_double_quotes(char *str, t_list *env_list)
 {
 	int		i;
@@ -78,7 +93,6 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 	tmp = NULL;
 	tmp2 = NULL;
 	offset = 0;
-	j = 0;
 	i = 0;
 	result = ft_strdup("");
 	while (str[i] != '\0' && str[i] != '"')
@@ -97,7 +111,10 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 			i++;
 			free_arr(env);
 			tmp2 = parse_env(&str[i]);
-			env = get_var_content(env_list, tmp2);
+			if (str[i] == '?')
+				env = get_exit_status_env(tmp2);
+			else
+				env = get_var_content(env_list, tmp2);
 			if (!env)
 			{
 				while (str[i] != '"')
