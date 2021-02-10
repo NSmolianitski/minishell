@@ -27,6 +27,7 @@ void	swap_env(char **cmd, t_list *env_list)
 	char	*env_start;
 	char	*content;
 	char	*tmp;
+	int		len;
 
 	while (ft_strchr_quotes(*cmd, '$'))
 	{
@@ -38,7 +39,10 @@ void	swap_env(char **cmd, t_list *env_list)
 			content = get_var_content(env_list, tmp);
 		if (!content)
 			content = ft_strdup("");
-		ms_strswap(cmd, content, (ft_strchr_quotes(*cmd, '$') - *cmd), ft_strlen(tmp));
+		len = ft_strlen(tmp);
+		if (ft_strnstr(*cmd, "$?", ft_strlen(*cmd)))
+			len = 1;
+		ms_strswap(cmd, content, (ft_strchr_quotes(*cmd, '$') - *cmd), len);
 		free(tmp);
 		free(content);
 	}
