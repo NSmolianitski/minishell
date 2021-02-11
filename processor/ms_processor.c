@@ -368,11 +368,35 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 }
 
 /*
+**  A function that saves and restores in and out file descriptors
+*/
+
+static void	save_restore_fds(int *in, int *out, int flag)
+{
+	if (flag)
+	{
+		*in = dup(0);
+		*out = dup(1);
+	}
+	else
+	{
+		dup2(*in, 0);
+		dup2(*out, 1);
+		close(*in);
+		close(*out);
+	}
+}
+
+/*
 **  A function that checks what command to execute
 */
 
 static int	check_cmd(t_cmd *cmd, t_list **env_list)
 {
+	int	in;
+	int	out;
+
+	save_restore_fds(&in ,&out, 1);
 	g_exit_status = 0;
 	handle_redirects(cmd);
 	if (!ms_strcmp(cmd->cmd, "echo"))
@@ -391,6 +415,7 @@ static int	check_cmd(t_cmd *cmd, t_list **env_list)
 		ms_exit(cmd);
 	else if (!try_external_cmd(cmd, env_list))
 		return (0);
+	save_restore_fds(&in, &out, 0);
 	return (1);
 }
 

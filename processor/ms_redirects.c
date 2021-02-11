@@ -8,7 +8,7 @@
 **  A function that removes unnecessary '>>' redirect and file name
 */
 
-static void rm_redir_append(t_cmd *cmd, int index)
+static void	rm_redir_append(t_cmd *cmd, int index)
 {
 	int		i;
 	int		j;
@@ -53,7 +53,7 @@ static void rm_redir_append(t_cmd *cmd, int index)
 **  A function that removes unnecessary '>' redirect and file name
 */
 
-static void rm_redir_out(t_cmd *cmd, int index)
+static void	rm_redir_out(t_cmd *cmd, int index)
 {
 	int		i;
 	int		j;
@@ -96,7 +96,7 @@ static void rm_redir_out(t_cmd *cmd, int index)
 **  A function that removes unnecessary '<' redirect and file name
 */
 
-static void rm_redir_in(t_cmd *cmd, int index)
+static void	rm_redir_in(t_cmd *cmd, int index)
 {
 	int		i;
 	int		j;
@@ -139,7 +139,7 @@ static void rm_redir_in(t_cmd *cmd, int index)
 **  A function that replaces file descriptors for redirects
 */
 
-static void make_redir(char *file, int stream, t_cmd *cmd, int index)
+static void	make_redir(char *file, int stream, t_cmd *cmd, int index)
 {
 	int		temp_fd;
 	char	buff[1000];
@@ -170,7 +170,7 @@ static void make_redir(char *file, int stream, t_cmd *cmd, int index)
 **  A function that handles redirects if they exists
 */
 
-void handle_redirects(t_cmd *cmd)
+void		handle_redirects(t_cmd *cmd)
 {
 	int	i;
 
