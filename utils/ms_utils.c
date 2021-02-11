@@ -60,7 +60,6 @@ int		skip_spaces(char const *line, int i)
 {
 	while (line[i] == ' ')
 		++i;
-
 	return (i);
 }
 

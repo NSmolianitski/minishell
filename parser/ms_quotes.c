@@ -4,12 +4,12 @@
 #include "ms_parser.h"
 #include "ms_processor.h"
 
-void	free_arr(char *tmp)
+void	free_arr(char **tmp)
 {
-	if (tmp)
+	if (*tmp)
 	{
-		free(tmp);
-		tmp = NULL;
+		free(*tmp);
+		*tmp = NULL;
 	}
 }
 
@@ -101,15 +101,15 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 		{
 			tmp2 = parse_backslash(&str[i + 1], &offset);
 			tmp = ft_strjoin(result, tmp2);
-			free_arr(tmp2);
-			free_arr(result);
+			free_arr(&tmp2);
+			free_arr(&result);
 			result = tmp;
 			i += offset;
 		}
 		else if (str[i] == '$')
 		{
 			i++;
-			free_arr(env);
+			free_arr(&env);
 			tmp2 = parse_env(&str[i]);
 			if (str[i] == '?')
 				env = get_exit_status_env(tmp2);
@@ -122,17 +122,17 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 				++i;
 				continue ;
 			}
-			free_arr(tmp2);
+			free_arr(&tmp2);
 			tmp2 = tmp;
 			tmp = ft_strjoin(result, env);
-			free_arr(tmp2);
-			free_arr(result);
+			free_arr(&tmp2);
+			free_arr(&result);
 			result = tmp;
 			tmp = NULL;
 			tmp2 = parse_env(&str[i]);
 			if (str[i] != '"' && tmp2)
 				i += ft_strlen(tmp2);
-			free_arr(tmp2);
+			free_arr(&tmp2);
 		}
 		else
 		{
@@ -147,14 +147,12 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 				k++;
 			}
 			tmp[k] = '\0';
-			tmp2 = result;
-			result = ft_strjoin(result, tmp);
-			free_arr(tmp2);
+			safe_strjoin(&result, tmp);
 			i += j;
-			free_arr(tmp);
+			free_arr(&tmp);
 		}
 	}
-	free_arr(env);
+	free_arr(&env);
 	return (result);
 }
 

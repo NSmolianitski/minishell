@@ -30,5 +30,6 @@ char	*ft_strchr_quotes(const char *s, int c);
 char	*ms_bs_strchr(const char *s, int c);
 int		is_symb_esc(const char *str, int i);
 void	double_free(char *s1, char *s2);
+char	**ms_split(const char *str, char c);
 
 # endif

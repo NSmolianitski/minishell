@@ -228,7 +228,7 @@ static void check_multiword_env(t_cmd *cmd)
 	int		i;
 	int		j;
 
-	arr = ft_split(cmd->cmd, ' ');
+	arr = ms_split(cmd->cmd, ' ');
 	if (!arr[0])
 	{
 		free(arr);
@@ -260,7 +260,7 @@ static void check_multiword_env(t_cmd *cmd)
 **  A function that gets coordinates of quotes string and parses that string
 */
 
-static int	swap_quotes(char **str, t_list *env_list, t_cmd *cmd)
+static int	swap_quotes(char **str, t_list *env_list, t_cmd *cmd, int is_cmd)
 {
 	t_coords	coords;
 	int 		i;
@@ -306,7 +306,8 @@ static int	swap_quotes(char **str, t_list *env_list, t_cmd *cmd)
 	else
 	{
 		swap_env(str, env_list);
-		check_multiword_env(cmd);
+		if (is_cmd)
+			check_multiword_env(cmd);
 	}
 	return (0);
 }
@@ -350,7 +351,7 @@ static void		handle_bslash(char **str)
 static int	check_quotes(t_cmd *cmd, t_list *env_list)
 {
 	int 		i;
-	if (swap_quotes(&cmd->cmd, env_list, cmd))
+	if (swap_quotes(&cmd->cmd, env_list, cmd, 1))
 		return (1);
 	handle_bslash(&cmd->cmd);
 	if (!cmd->args)
@@ -359,7 +360,7 @@ static int	check_quotes(t_cmd *cmd, t_list *env_list)
 	while (cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
-		if (swap_quotes(&cmd->args[i], env_list, cmd))
+		if (swap_quotes(&cmd->args[i], env_list, cmd, 0))
 			return (1);
 		handle_bslash(&cmd->args[i]);
 		++i;

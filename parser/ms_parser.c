@@ -75,7 +75,7 @@ static int	get_word(const char *cmd_line, char **cmd, int i)
 	}
 	while (cmd_line[i])
 	{
-		if (!quotes_flag && ft_strchr("<> |;", cmd_line[i]))
+		if (!is_symb_esc(cmd_line, i) && !quotes_flag && ft_strchr("<> |;", cmd_line[i]))
 			break ;
 		if ((quotes_flag == 1 && cmd_line[i] == '\'') || (quotes_flag == 2 && cmd_line[i] == '"'))
 		{

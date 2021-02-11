@@ -22,7 +22,8 @@ int		ms_echo(char **args)
 	if (!ms_strcmp(args[0], "-n"))
 	{
 		n_option = 1;
-		++i;
+		while (!ms_strcmp(args[i], "-n"))
+			++i;
 	}
 	while (args[i])
 	{
