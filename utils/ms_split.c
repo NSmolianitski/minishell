@@ -68,6 +68,7 @@ char			**ms_split(const char *str, char c)
 		start += len;
 		len = get_word_coords(str, &start, c);
 		arr[i] = ft_substr(str, start, len);
+		++len;
 		++i;
 	}
 	return (arr);

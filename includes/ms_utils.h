@@ -17,6 +17,7 @@
 # define CNF "command not found"
 # define SES "syntax error near unexpected token ';'"
 # define SEP "syntax error near unexpected token '|'"
+# define SEN "syntax error near unexpected token 'newline'"
 # define NVI "not a valid identifier"
 # define SNIP "string not in pwd:"
 # define HNS "HOME not set"
