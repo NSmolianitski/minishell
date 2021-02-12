@@ -1,8 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_export.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 11:09:25 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 11:29:18 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ms_utils.h"
 #include "ms_parser.h"
 #include "ms_processor.h"
 
-static void replace_var(t_cmd *cmd, t_list **env_list, char *name, int index)
+static void	replace_var(t_cmd *cmd, t_list **env_list, char *name, int index)
 {
 	int		i;
 	int		j;
@@ -28,7 +40,7 @@ static void replace_var(t_cmd *cmd, t_list **env_list, char *name, int index)
 	free(name);
 }
 
-static void export_err(char *str)
+static void	export_err(char *str)
 {
 	if (str[0] == '\0')
 		print_error(NVI, "=", 3);
@@ -38,7 +50,7 @@ static void export_err(char *str)
 	free(str);
 }
 
-static int is_valid_name(char *name)
+static int	is_valid_name(char *name)
 {
 	int i;
 
@@ -60,49 +72,56 @@ static int is_valid_name(char *name)
 	return (1);
 }
 
-void	ms_export(t_cmd *cmd, t_list **env_list)
+static void	if_find_var(t_cmd *cmd, t_list **env_list, char *name, int arr[2])
 {
-	int 	i;
-	int 	j;
-	int 	k;
-	char	*name;
+	int		j;
 	char	*content;
 	t_list	*new_lst;
+
+	if (find_var(*env_list, name))
+		replace_var(cmd, env_list, name, arr[1]);
+	else
+	{
+		if (cmd->args[arr[1]][arr[0]] == '=')
+		{
+			++arr[0];
+			j = arr[0];
+			while (cmd->args[0][arr[0]] != '\0')
+				++arr[0];
+			content = ft_substr(cmd->args[arr[1]], j, arr[0] - j);
+		}
+		else
+			content = NULL;
+		new_lst = ft_lstnew(name, content);
+		ft_lstadd_back(env_list, new_lst);
+	}
+}
+
+void		ms_export(t_cmd *cmd, t_list **env_list)
+{
+	char	*name;
+	int		arr[2];
 
 	if (!cmd->args)
 	{
 		print_list(*env_list, 1);
 		return ;
 	}
-	k = 0;
-	while (cmd->args[k])
+	arr[1] = 0;
+	while (cmd->args[arr[1]])
 	{
-		i = 0;
-		while (cmd->args[k][i] != '=' && cmd->args[k][i] != '\0')
-			++i;
-		name = ft_substr(cmd->args[k], 0, i);
+		arr[0] = 0;
+		while (cmd->args[arr[1]][arr[0]] !=
+				'=' && cmd->args[arr[1]][arr[0]] != '\0')
+			++arr[0];
+		name = ft_substr(cmd->args[arr[1]], 0, arr[0]);
 		if (!is_valid_name(name))
 		{
-			++k;
+			++arr[1];
 			continue;
 		}
-		if (find_var(*env_list, name))
-			replace_var(cmd, env_list, name, k);
-		else
-		{
-			if (cmd->args[k][i] == '=')
-			{
-				++i;
-				j = i;
-				while (cmd->args[0][i] != '\0')
-					++i;
-				content = ft_substr(cmd->args[k], j, i - j);
-			} else
-				content = NULL;
-			new_lst = ft_lstnew(name, content);
-			ft_lstadd_back(env_list, new_lst);
-		}
+		if_find_var(cmd, env_list, name, arr);
 		g_exit_status = 0;
-		++k;
+		++arr[1];
 	}
 }

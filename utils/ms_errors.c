@@ -1,51 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_errors.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 11:46:36 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 11:46:38 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <unistd.h>
-#include "libft.h"
 #include "ms_utils.h"
-
-static void	write_ms_err_begin_with_cmd(char *str)
-{
-	write(1, "minishell: ", 11);
-	write(1, str, ft_strlen(str));
-	write(1, ": ", 2);
-}
-
-static void	write_ms_err_begin_export(char *str)
-{
-	write(1, "minishell: export: '", 20);
-	print_line(str, 1);
-	write(1, "': ", 3);
-}
-
-static void	write_ms_err_begin_unset(char *str)
-{
-	write(1, "minishell: unset: '", 19);
-	print_line(str, 1);
-	write(1, "': ", 3);
-}
-
-static void	write_ms_err_begin_exit(char *str)
-{
-	write(1, "minishell: exit: '", 18);
-	print_line(str, 1);
-	write(1, "': ", 3);
-}
-
-static void	write_ms_err_begin_cd(char *str)
-{
-	write(1, "minishell: cd: ", 15);
-	if (str[0] != '\0')
-	{
-		print_line(str, 1);
-		write(1, ": ", 2);
-	}
-}
 
 static void	write_ms_err_begin(void)
 {
 	write(1, "minishell: ", 11);
 }
 
-void	print_error(char *error, char *str, int err_type)
+void		print_error(char *error, char *str, int err_type)
 {
 	if (err_type == 1)
 		write_ms_err_begin_with_cmd(str);

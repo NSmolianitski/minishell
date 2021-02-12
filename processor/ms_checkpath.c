@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_checkpath.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 11:37:20 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 11:37:22 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ms_processor.h"
 #include "libft.h"
 
@@ -34,12 +46,8 @@ char	*get_path(char *cmd, t_list **env_list)
 			free(exec_path);
 		}
 		else
-		{
-			//free_arr(path);
 			return (exec_path);
-		}
 		i++;
 	}
-	//free_arr(path);
 	return (cmd);
 }

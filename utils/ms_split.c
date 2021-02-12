@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_split.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 11:46:50 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 11:46:51 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ms_parser.h"
 
-static int count_words(const char *str, char c)
+static int		count_words(const char *str, char c)
 {
 	int		i;
-	int 	words_num;
+	int		words_num;
 
 	i = 0;
 	words_num = 0;
@@ -21,7 +33,7 @@ static int count_words(const char *str, char c)
 	return (words_num);
 }
 
-static int	get_word_coords(const char *str, int *start, char c)
+static int		get_word_coords(const char *str, int *start, char c)
 {
 	int len;
 
@@ -37,13 +49,13 @@ static int	get_word_coords(const char *str, int *start, char c)
 	return (len);
 }
 
-char **ms_split(const char *str, char c)
+char			**ms_split(const char *str, char c)
 {
 	char	**arr;
 	int		words_num;
-	int 	i;
-	int 	start;
-	int 	len;
+	int		i;
+	int		start;
+	int		len;
 
 	words_num = count_words(str, c);
 	arr = malloc(sizeof(char *) * (words_num + 1));

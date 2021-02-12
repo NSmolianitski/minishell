@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_quotes.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 11:55:38 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 11:55:40 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include "libft.h"
 #include "ms_utils.h"
 #include "ms_parser.h"
 #include "ms_processor.h"
 
-void	free_arr(char **tmp)
+void		free_arr(char **tmp)
 {
 	if (*tmp)
 	{
@@ -13,7 +25,7 @@ void	free_arr(char **tmp)
 	}
 }
 
-char	*parse_env(char *str)
+char		*parse_env(char *str)
 {
 	int		i;
 	int		j;
@@ -38,7 +50,7 @@ char	*parse_env(char *str)
 	return (result);
 }
 
-char	*parse_backslash(char *str, int *offset)
+char		*parse_backslash(char *str, int *offset)
 {
 	int		i;
 	char	*result;
@@ -63,7 +75,7 @@ char	*parse_backslash(char *str, int *offset)
 	return (result);
 }
 
-static char *get_exit_status_env(char *str)
+static char	*get_exit_status_env(char *str)
 {
 	char	*tmp;
 	char	*tmp2;
@@ -77,7 +89,7 @@ static char *get_exit_status_env(char *str)
 	return (tmp);
 }
 
-char	*proccess_double_quotes(char *str, t_list *env_list)
+char		*proccess_double_quotes(char *str, t_list *env_list)
 {
 	int		i;
 	int		j;
@@ -156,7 +168,7 @@ char	*proccess_double_quotes(char *str, t_list *env_list)
 	return (result);
 }
 
-char	*proccess_single_quotes(char *str)
+char		*proccess_single_quotes(char *str)
 {
 	int		i;
 	int		j;
@@ -176,7 +188,7 @@ char	*proccess_single_quotes(char *str)
 	return (result);
 }
 
-char	*parse_qoutes(char *str, t_list *env_list)
+char		*parse_qoutes(char *str, t_list *env_list)
 {
 	int		i;
 	char	*result;

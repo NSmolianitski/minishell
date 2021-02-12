@@ -1,11 +1,23 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ms_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 11:08:49 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 11:08:51 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <stdlib.h>
 #include "ms_processor.h"
 #include "libft.h"
 
-void ms_exit(t_cmd *cmd)
+void	ms_exit(t_cmd *cmd)
 {
 	unsigned char	status;
-	int 			i;
+	int				i;
 
 	print_line("exit\n", 1);
 	if (cmd->args)

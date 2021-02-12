@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: pkentaur <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/02/12 12:32:25 by pkentaur          #+#    #+#             */
+/*   Updated: 2021/02/12 12:32:26 by pkentaur         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <unistd.h>
 #include <stdlib.h>
 #include "ms_utils.h"
@@ -6,21 +18,10 @@
 #include "ms_processor.h"
 
 /*
-**  A function that prints shell tag
-*/
-
-void	print_shell_tag(void)
-{
-	write(1, "\033[32m", ft_strlen("\033[32m")); //output color
-	write(1, "minishell$ ", 11);
-	write(1, "\033[0m", ft_strlen("\033[0m"));
-}
-
-/*
 **  A function that gets the command line from input
 */
 
-static char	*get_cmd_line(void)
+static char		*get_cmd_line(void)
 {
 	char	buff[2];
 	char	*cmd_line;
@@ -34,9 +35,7 @@ static char	*get_cmd_line(void)
 	{
 		if (read_bytes == 0)
 		{
-			if (!flag)
-				return (ft_strdup("exit"));
-			write(1, "  \b\b", 4);
+			gcl_norm(flag);
 			continue ;
 		}
 		flag = 1;
@@ -51,14 +50,22 @@ static char	*get_cmd_line(void)
 	return (cmd_line);
 }
 
+static void		pf_norm(t_cmd **cmd_arr, int *i)
+{
+	cmd_arr[*i]->args = NULL;
+	free(cmd_arr[*i]);
+	cmd_arr[*i] = NULL;
+	++(*i);
+}
+
 /*
 **  A function that frees commands array and command line
 */
 
-static void parser_free(char **cmd_line, t_cmd **cmd_arr)
+static void		parser_free(char **cmd_line, t_cmd **cmd_arr)
 {
-	int 	i;
-	int 	j;
+	int		i;
+	int		j;
 
 	free(*cmd_line);
 	*cmd_line = NULL;
@@ -77,45 +84,11 @@ static void parser_free(char **cmd_line, t_cmd **cmd_arr)
 			}
 			free(cmd_arr[i]->args);
 		}
-		cmd_arr[i]->args = NULL;
-		free(cmd_arr[i]);
-		cmd_arr[i] = NULL;
-		++i;
+		pf_norm(cmd_arr, &i);
 	}
 	free(cmd_arr[i]);
 	cmd_arr[i] = NULL;
 	free(cmd_arr);
-}
-
-static void		get_env(const char *env, char **name, char **content)
-{
-	int		i;
-	int		j;
-
-	j = 0;
-	while (env[j] != '=')
-		++j;
-	*name = malloc(sizeof(char) * (j + 1));
-	i = 0;
-	while (env[i] != '=')
-	{
-		(*name)[i] = env[i];
-		++i;
-	}
-	(*name)[i] = '\0';
-	++i;
-	j = i;
-	while (env[j] != '\0')
-		++j;
-	*content = malloc(sizeof(char) * ((j - i) + 1));
-	j = 0;
-	while (env[i] != '\0')
-	{
-		(*content)[j] = env[i];
-		++i;
-		++j;
-	}
-	(*content)[j] = '\0';
 }
 
 /*
@@ -150,27 +123,23 @@ int				main(int argc, char **argv, char **envp)
 
 	argc += 0;
 	argv += 0;
-
-	g_exit_status = 0;							//set exit status to zero
+	g_exit_status = 0;
 	g_signal_flag = 0;
-
-	make_env_list(envp, &env_list);				//create environment variable list from envp
+	make_env_list(envp, &env_list);
 	signal(SIGINT, sig_int);
 	signal(SIGQUIT, sig_quit);
 	while (1)
 	{
-		print_shell_tag();					//print shell tag
+		print_shell_tag();
 		g_signal_flag = 0;
-		cmd_line = get_cmd_line();				//read command line and put it to a variable
-		cmd_arr = parser(cmd_line);	//send command line to parser (and get commands array)
-		if (!cmd_arr)							//if no commands -> continue
+		cmd_line = get_cmd_line();
+		cmd_arr = parser(cmd_line);
+		if (!cmd_arr)
 		{
 			free(cmd_line);
 			continue;
 		}
-		processor(cmd_arr, &env_list);			//execute commands
-		parser_free(&cmd_line, cmd_arr);		//free commands array and command line
-//		exit(g_exit_status);					//!for testing!
+		processor(cmd_arr, &env_list);
+		parser_free(&cmd_line, cmd_arr);
 	}
-	return (0);
 }
