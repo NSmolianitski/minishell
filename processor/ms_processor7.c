@@ -34,7 +34,8 @@ void		handle_bslash(char **str)
 			q_flag = 1;
 		else if (tmp[i] == '"' && !q_flag)
 			q_flag = 2;
-		else if ((tmp[i] == '\'' && q_flag == 1) || (tmp[i] == '"' && q_flag == 2))
+		else if ((tmp[i] == '\'' && q_flag == 1) ||
+		(tmp[i] == '"' && q_flag == 2))
 			q_flag = 0;
 		if (!q_flag && tmp[i] == '\\')
 			check_bslash(tmp, &i, str, &str_diff);

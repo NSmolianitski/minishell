@@ -17,7 +17,8 @@ static void		gqc_norm(t_coords *coords, const char *str)
 	coords->end = coords->start + 1;
 	while (str[coords->end])
 	{
-		if ((coords->type == 1 && str[coords->end] == '\'') || (coords->type == 2 &&
+		if ((coords->type == 1 && str[coords->end] == '\'') ||
+		(coords->type == 2 &&
 		(str[coords->end] == '"' && !is_symb_esc(str, coords->end))))
 			break ;
 		++coords->end;
@@ -30,31 +31,31 @@ static void		gqc_norm(t_coords *coords, const char *str)
 
 t_coords		get_quotes_coords(char **str, int i)
 {
-	t_coords	coords;
+	t_coords	cr;
 
-	coords.start = i;
-	coords.type = 0;
-	while ((*str)[coords.start])
+	cr.start = i;
+	cr.type = 0;
+	while ((*str)[cr.start])
 	{
-		if ((*str)[coords.start] == '\'' && !is_symb_esc(*str, coords.start))
-			coords.type = 1;
-		else if ((*str)[coords.start] == '"' && !is_symb_esc(*str, coords.start))
-			coords.type = 2;
-		else if (is_symb_esc(*str, coords.start))
-			coords.start = check_bslash2(str, coords.start - 1);
-		if (coords.type)
+		if ((*str)[cr.start] == '\'' && !is_symb_esc(*str, cr.start))
+			cr.type = 1;
+		else if ((*str)[cr.start] == '"' && !is_symb_esc(*str, cr.start))
+			cr.type = 2;
+		else if (is_symb_esc(*str, cr.start))
+			cr.start = check_bslash2(str, cr.start - 1);
+		if (cr.type)
 			break ;
-		++coords.start;
+		++cr.start;
 	}
-	if ((*str)[coords.start] != '\0')
+	if ((*str)[cr.start] != '\0')
 	{
-		gqc_norm(&coords, *str);
-		if ((*str)[coords.end] == '\0')
-			coords.type = 3;
+		gqc_norm(&cr, *str);
+		if ((*str)[cr.end] == '\0')
+			cr.type = 3;
 	}
 	else
-		coords.type = 4;
-	return (coords);
+		cr.type = 4;
+	return (cr);
 }
 
 /*
