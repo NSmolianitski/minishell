@@ -32,10 +32,14 @@ static void	redir_in(int *temp_fd, char *file, t_cmd *cmd, int index)
 
 static int	redir_err(t_cmd *cmd, int stream, int index)
 {
+	if (cmd->args[index + 1])
+		return (0);
 	print_error(SEN, "", 2);
 	g_exit_status = 258;
 	free(cmd->cmd);
 	cmd->cmd = ft_strdup("");
+	free_strs_arr(&cmd->args);
+	cmd->args = NULL;
 	if (stream == 3)
 		rm_redir_append(cmd, index);
 	return (1);
@@ -50,6 +54,8 @@ static void	make_redir(char *file, int stream, t_cmd *cmd, int index)
 	int		temp_fd;
 	char	buff[1000];
 
+	if (redir_err(cmd, stream, index))
+		return ;
 	if (stream == 3)
 	{
 		temp_fd = open(file, O_RDWR | O_CREAT, 0666);
@@ -72,6 +78,27 @@ static void	make_redir(char *file, int stream, t_cmd *cmd, int index)
 	close(temp_fd);
 }
 
+static void	redir_cycle(t_cmd *cmd, int *i)
+{
+	if (!ms_strcmp(">", cmd->args[*i]) && (!cmd->args[*i + 1] ||
+				ms_strcmp(">", cmd->args[*i + 1])))
+	{
+		make_redir(cmd->args[*i + 1], 1, cmd, *i);
+		*i = 0;
+	}
+	else if (!ms_strcmp("<", cmd->args[*i]))
+	{
+		make_redir(cmd->args[*i + 1], 0, cmd, *i);
+		*i = 0;
+	}
+	else if (!ms_strcmp(">", cmd->args[*i]) &&
+				!ms_strcmp(">", cmd->args[*i + 1]))
+	{
+		make_redir(cmd->args[*i + 2], 3, cmd, *i);
+		*i = 0;
+	}
+}
+
 /*
 **  A function that handles redirects if they exists
 */
@@ -80,27 +107,20 @@ void		handle_redirects(t_cmd *cmd)
 {
 	int	i;
 
+	if (*cmd->cmd == '>' || *cmd->cmd == '<')
+	{
+		free(cmd->cmd);
+		cmd->cmd = ft_strdup("");
+		print_error(SEN, "", 2);
+		g_exit_status = 258;
+		return ;
+	}
 	if (!cmd->args)
 		return ;
 	i = 0;
 	while (cmd->args && cmd->args[i])
 	{
-		if (!ms_strcmp(">", cmd->args[i]) && (!cmd->args[i + 1] || ms_strcmp(">", cmd->args[i + 1])))
-		{
-			make_redir(cmd->args[i + 1], 1, cmd, i);
-			i = 0;
-		}
-		else if (!ms_strcmp("<", cmd->args[i]))
-		{
-			make_redir(cmd->args[i + 1], 0, cmd, i);
-			i = 0;
-		}
-		else if (!ms_strcmp(">", cmd->args[i]) &&
-				!ms_strcmp(">", cmd->args[i + 1]))
-		{
-			make_redir(cmd->args[i + 2], 3, cmd, i);
-			i = 0;
-		}
+		redir_cycle(cmd, &i);
 		++i;
 	}
 }
