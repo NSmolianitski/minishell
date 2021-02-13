@@ -53,7 +53,7 @@ int		sq_norm6(int i, char **str, t_list *env_list, char *tmp)
 	sq_norm5(&tmp, str, &tmp2);
 	while (tmp[i])
 	{
-		coords = get_quotes_coords(tmp, i);
+		coords = get_quotes_coords(&tmp, i);
 		if (coords.type == 3)
 		{
 			free(tmp);

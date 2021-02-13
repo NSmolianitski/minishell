@@ -22,24 +22,22 @@ void		handle_bslash(char **str)
 	char	*tmp;
 	int		i;
 	int		str_diff;
+	int		q_flag;
 
 	tmp = ft_strdup(*str);
 	i = 0;
 	str_diff = 0;
+	q_flag = 0;
 	while (tmp[i])
 	{
-		if (tmp[i] == '\\')
-		{
-			if (tmp[i + 1] == '\\')
-			{
-				ms_strswap(str, "\\", (i - str_diff), 1);
-				++i;
-			}
-			else
-				ms_strswap(str, "", (i - str_diff), 0);
-			++str_diff;
-			++i;
-		}
+		if (tmp[i] == '\'' && !q_flag)
+			q_flag = 1;
+		else if (tmp[i] == '"' && !q_flag)
+			q_flag = 2;
+		else if ((tmp[i] == '\'' && q_flag == 1) || (tmp[i] == '"' && q_flag == 2))
+			q_flag = 0;
+		if (!q_flag && tmp[i] == '\\')
+			check_bslash(tmp, &i, str, &str_diff);
 		++i;
 	}
 	free(tmp);
@@ -55,7 +53,6 @@ int			check_quotes(t_cmd *cmd, t_list *env_list)
 
 	if (swap_quotes(&cmd->cmd, env_list, cmd, 1))
 		return (1);
-	handle_bslash(&cmd->cmd);
 	if (!cmd->args)
 		return (0);
 	i = 0;
@@ -64,7 +61,6 @@ int			check_quotes(t_cmd *cmd, t_list *env_list)
 		swap_env(&cmd->args[i], env_list);
 		if (swap_quotes(&cmd->args[i], env_list, cmd, 0))
 			return (1);
-		handle_bslash(&cmd->args[i]);
 		++i;
 	}
 	return (0);

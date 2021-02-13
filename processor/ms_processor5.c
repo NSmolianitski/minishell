@@ -40,6 +40,9 @@ int			swap_quotes(char **str, t_list *env_list, t_cmd *cmd, int is_cmd)
 			return (0);
 	}
 	else
+	{
+		handle_bslash(str);
 		sq_norm3(cmd, env_list, str, is_cmd);
+	}
 	return (0);
 }

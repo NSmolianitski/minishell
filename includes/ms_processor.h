@@ -36,7 +36,7 @@ int				try_external_cmd(t_cmd *cmd, t_list **env_list);
 void			free_strs_arr(char ***args);
 void			prepare_args(t_cmd *cmd, char ***args);
 void			list_to_arr(t_list *env_list, char ***envp);
-t_coords		get_quotes_coords(const char *str, int i);
+t_coords		get_quotes_coords(char **str, int i);
 int				check_multiline(char *str);
 char			*prepare_quotes_str(char *str, t_list *env_list,
 						t_coords coords, int i);
@@ -56,5 +56,7 @@ void			execute_cmd(t_cmd *cmd, t_list **env_list);
 void			rm_redir_in(t_cmd *cmd, int index);
 void			rm_redir_append(t_cmd *cmd, int index);
 void			rm_redir_out(t_cmd *cmd, int index);
+void			check_bslash(char *tmp, int *i, char **str, int *str_diff);
+int				check_bslash2(char **str, int i);
 
 #endif
