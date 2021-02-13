@@ -58,5 +58,8 @@ void			rm_redir_append(t_cmd *cmd, int index);
 void			rm_redir_out(t_cmd *cmd, int index);
 void			check_bslash(char *tmp, int *i, char **str, int *str_diff);
 int				check_bslash2(char **str, int i);
+int				redir_in(int *temp_fd, char *file, t_cmd *cmd, int index);
+int				redir_err_norm(int *temp_fd, char *file, t_cmd *cmd, int index);
+void			redir_stream_one(int temp_fd, t_cmd *cmd, int index);
 
 #endif

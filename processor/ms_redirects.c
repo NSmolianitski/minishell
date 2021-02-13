@@ -16,7 +16,7 @@
 #include "ms_parser.h"
 #include "ms_processor.h"
 
-static void	redir_in(int *temp_fd, char *file, t_cmd *cmd, int index)
+int			redir_in(int *temp_fd, char *file, t_cmd *cmd, int index)
 {
 	*temp_fd = open(file, O_RDWR);
 	if (*temp_fd < 0)
@@ -25,9 +25,11 @@ static void	redir_in(int *temp_fd, char *file, t_cmd *cmd, int index)
 		g_exit_status = 1;
 		free(cmd->cmd);
 		cmd->cmd = ft_strdup("");
+		return (1);
 	}
 	else
 		dup2(*temp_fd, 0);
+	return (0);
 }
 
 static int	redir_err(t_cmd *cmd, int stream, int index)
@@ -49,13 +51,13 @@ static int	redir_err(t_cmd *cmd, int stream, int index)
 **  A function that replaces file descriptors for redirects
 */
 
-static void	make_redir(char *file, int stream, t_cmd *cmd, int index)
+static int	make_redir(char *file, int stream, t_cmd *cmd, int index)
 {
 	int		temp_fd;
 	char	buff[1000];
 
 	if (redir_err(cmd, stream, index))
-		return ;
+		return (0);
 	if (stream == 3)
 	{
 		temp_fd = open(file, O_RDWR | O_CREAT, 0666);
@@ -67,36 +69,44 @@ static void	make_redir(char *file, int stream, t_cmd *cmd, int index)
 	else if (stream == 1)
 	{
 		temp_fd = open(file, O_RDWR | O_CREAT | O_TRUNC, 0666);
-		dup2(temp_fd, 1);
-		rm_redir_out(cmd, index);
+		redir_stream_one(temp_fd, cmd, index);
 	}
 	else
 	{
-		redir_in(&temp_fd, file, cmd, index);
-		rm_redir_in(cmd, index);
+		if (redir_err_norm(&temp_fd, file, cmd, index))
+			return (1);
 	}
 	close(temp_fd);
+	return (0);
 }
 
-static void	redir_cycle(t_cmd *cmd, int *i)
+static int	redir_cycle(t_cmd *cmd, int *i)
 {
+	int	err;
+
+	err = 0;
 	if (!ms_strcmp(">", cmd->args[*i]) && (!cmd->args[*i + 1] ||
 				ms_strcmp(">", cmd->args[*i + 1])))
 	{
-		make_redir(cmd->args[*i + 1], 1, cmd, *i);
+		err = make_redir(cmd->args[*i + 1], 1, cmd, *i);
 		*i = 0;
 	}
 	else if (!ms_strcmp("<", cmd->args[*i]))
 	{
-		make_redir(cmd->args[*i + 1], 0, cmd, *i);
+		err = make_redir(cmd->args[*i + 1], 0, cmd, *i);
 		*i = 0;
 	}
 	else if (!ms_strcmp(">", cmd->args[*i]) &&
 				!ms_strcmp(">", cmd->args[*i + 1]))
 	{
-		make_redir(cmd->args[*i + 2], 3, cmd, *i);
+		err = make_redir(cmd->args[*i + 2], 3, cmd, *i);
 		*i = 0;
 	}
+	else
+		++(*i);
+	if (err)
+		return (1);
+	return (0);
 }
 
 /*
@@ -120,7 +130,7 @@ void		handle_redirects(t_cmd *cmd)
 	i = 0;
 	while (cmd->args && cmd->args[i])
 	{
-		redir_cycle(cmd, &i);
-		++i;
+		if (redir_cycle(cmd, &i))
+			return ;
 	}
 }

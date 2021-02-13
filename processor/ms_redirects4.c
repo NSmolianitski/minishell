@@ -71,3 +71,11 @@ void		rm_redir_out(t_cmd *cmd, int index)
 	free(cmd->args);
 	cmd->args = new_args;
 }
+
+int			redir_err_norm(int *temp_fd, char *file, t_cmd *cmd, int index)
+{
+	if (redir_in(temp_fd, file, cmd, index))
+		return (1);
+	rm_redir_in(cmd, index);
+	return (0);
+}

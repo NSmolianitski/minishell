@@ -42,6 +42,38 @@ static void		parse_commands(const char *cmd_line, int i,
 	}
 }
 
+static int		print_redir_err(void)
+{
+	print_error(SEN, "", 2);
+	return (1);
+}
+
+static int		check_redirs(const char *cmd_line)
+{
+	int	i;
+	int flag;
+
+	i = 0;
+	flag = 0;
+	while (cmd_line[i])
+	{
+		if (cmd_line[i] == '>' && !flag)
+			flag = 2;
+		else if (cmd_line[i] == '<' && !flag)
+			flag = 1;
+		else if (flag && !ft_strchr(" ><", cmd_line[i]))
+			flag = 0;
+		else if (flag && (cmd_line[i] == '<' || cmd_line[i] == '>'))
+			return (print_redir_err());
+		if (cmd_line[i] == '>' && cmd_line[++i] == '>')
+			++flag;
+		++i;
+	}
+	if (flag)
+		return (print_redir_err());
+	return (0);
+}
+
 t_cmd			**parser(const char *cmd_line)
 {
 	t_cmd	**cmd_arr;
@@ -49,6 +81,8 @@ t_cmd			**parser(const char *cmd_line)
 	int		j;
 	int		k;
 
+	if (check_redirs(cmd_line))
+		return (0);
 	i = 0;
 	j = check_for_empty_line(cmd_line);
 	if (j)

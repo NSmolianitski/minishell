@@ -73,3 +73,9 @@ void		rm_redir_append(t_cmd *cmd, int index)
 	free(cmd->args);
 	cmd->args = new_args;
 }
+
+void		redir_stream_one(int temp_fd, t_cmd *cmd, int index)
+{
+	dup2(temp_fd, 1);
+	rm_redir_out(cmd, index);
+}
