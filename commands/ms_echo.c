@@ -58,7 +58,7 @@ int			ms_echo(char **args)
 	if (!ms_strcmp(args[0], "-n"))
 	{
 		n_option = 1;
-		while (!ms_strcmp(args[i], "-n"))
+		while (args[i] && !ms_strcmp(args[i], "-n"))
 			++i;
 	}
 	print_args(args, i);
