@@ -42,31 +42,20 @@ static void		parse_commands(const char *cmd_line, int i,
 	}
 }
 
-static int		print_redir_err(void)
-{
-	print_error(SEN, "", 2);
-	return (1);
-}
-
 static int		check_redirs(const char *cmd_line)
 {
 	int	i;
 	int flag;
+	int	quotes;
 
 	i = 0;
 	flag = 0;
+	quotes = 0;
 	while (cmd_line[i])
 	{
-		if (cmd_line[i] == '>' && !flag)
-			flag = 2;
-		else if (cmd_line[i] == '<' && !flag)
-			flag = 1;
-		else if (flag && !ft_strchr(" ><", cmd_line[i]))
-			flag = 0;
-		else if (flag && (cmd_line[i] == '<' || cmd_line[i] == '>'))
-			return (print_redir_err());
-		if (cmd_line[i] == '>' && cmd_line[++i] == '>')
-			++flag;
+		check_redir_quotes(&quotes, i, cmd_line);
+		if (!quotes)
+			check_redir_parser_norm(&flag, cmd_line, &i);
 		++i;
 	}
 	if (flag)

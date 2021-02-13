@@ -38,5 +38,9 @@ char			*parse_env(char *str);
 char			*parse_backslash(char *str, int *offset);
 void			join_result(char **tmp2, char **result);
 int				proccess_simple_text(char *str, char **result);
+void			check_redir_quotes(int *quotes, int i, const char *cmd_line);
+int				print_redir_err(void);
+int				check_redir_parser_norm(int *flag, const char
+*cmd_line, int *i);
 
 #endif
