@@ -12,7 +12,7 @@
 
 #include "ms_parser.h"
 
-static int		count_words(const char *str, char c)
+static int		count_words(const char *str)
 {
 	int		i;
 	int		words_num;
@@ -57,7 +57,7 @@ char			**ms_split(const char *str, char c)
 	int		start;
 	int		len;
 
-	words_num = count_words(str, c);
+	words_num = count_words(str);
 	arr = malloc(sizeof(char *) * (words_num + 1));
 	arr[words_num] = NULL;
 	i = 0;

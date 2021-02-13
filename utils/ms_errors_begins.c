@@ -16,38 +16,38 @@
 
 void	write_ms_err_begin_with_cmd(char *str)
 {
-	write(1, "minishell: ", 11);
-	write(1, str, ft_strlen(str));
-	write(1, ": ", 2);
+	write(2, "minishell: ", 11);
+	write(2, str, ft_strlen(str));
+	write(2, ": ", 2);
 }
 
 void	write_ms_err_begin_export(char *str)
 {
-	write(1, "minishell: export: '", 20);
-	print_line(str, 1);
-	write(1, "': ", 3);
+	write(2, "minishell: export: '", 20);
+	print_line(str, 2);
+	write(2, "': ", 3);
 }
 
 void	write_ms_err_begin_unset(char *str)
 {
-	write(1, "minishell: unset: '", 19);
-	print_line(str, 1);
-	write(1, "': ", 3);
+	write(2, "minishell: unset: '", 19);
+	print_line(str, 2);
+	write(2, "': ", 3);
 }
 
 void	write_ms_err_begin_exit(char *str)
 {
-	write(1, "minishell: exit: '", 18);
-	print_line(str, 1);
-	write(1, "': ", 3);
+	write(2, "minishell: exit: '", 18);
+	print_line(str, 2);
+	write(2, "': ", 3);
 }
 
 void	write_ms_err_begin_cd(char *str)
 {
-	write(1, "minishell: cd: ", 15);
+	write(2, "minishell: cd: ", 15);
 	if (str[0] != '\0')
 	{
-		print_line(str, 1);
-		write(1, ": ", 2);
+		print_line(str, 2);
+		write(2, ": ", 2);
 	}
 }

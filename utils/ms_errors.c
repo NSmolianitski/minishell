@@ -15,7 +15,7 @@
 
 static void	write_ms_err_begin(void)
 {
-	write(1, "minishell: ", 11);
+	write(2, "minishell: ", 11);
 }
 
 void		print_error(char *error, char *str, int err_type)
@@ -32,15 +32,15 @@ void		print_error(char *error, char *str, int err_type)
 		write_ms_err_begin_exit(str);
 	else if (err_type == 7)
 		write_ms_err_begin_unset(str);
-	(!ms_strcmp(error, NSFD)) ? print_line(NSFD, 1) : 0;
-	(!ms_strcmp(error, CNF)) ? print_line(CNF, 1) : 0;
-	(!ms_strcmp(error, SES)) ? print_line(SES, 1) : 0;
-	(!ms_strcmp(error, SEP)) ? print_line(SEP, 1) : 0;
-	(!ms_strcmp(error, SEN)) ? print_line(SEN, 1) : 0;
-	(!ms_strcmp(error, NVI)) ? print_line(NVI, 1) : 0;
-	(!ms_strcmp(error, SNIP)) ? print_line(SNIP, 1) : 0;
-	(!ms_strcmp(error, HNS)) ? print_line(HNS, 1) : 0;
-	(!ms_strcmp(error, MLA)) ? print_line(MLA, 1) : 0;
-	(!ms_strcmp(error, NAR)) ? print_line(NAR, 1) : 0;
-	write(1, "\n", 1);
+	(!ms_strcmp(error, NSFD)) ? print_line(NSFD, 2) : 0;
+	(!ms_strcmp(error, CNF)) ? print_line(CNF, 2) : 0;
+	(!ms_strcmp(error, SES)) ? print_line(SES, 2) : 0;
+	(!ms_strcmp(error, SEP)) ? print_line(SEP, 2) : 0;
+	(!ms_strcmp(error, SEN)) ? print_line(SEN, 2) : 0;
+	(!ms_strcmp(error, NVI)) ? print_line(NVI, 2) : 0;
+	(!ms_strcmp(error, SNIP)) ? print_line(SNIP, 2) : 0;
+	(!ms_strcmp(error, HNS)) ? print_line(HNS, 2) : 0;
+	(!ms_strcmp(error, MLA)) ? print_line(MLA, 2) : 0;
+	(!ms_strcmp(error, NAR)) ? print_line(NAR, 2) : 0;
+	write(2, "\n", 1);
 }
