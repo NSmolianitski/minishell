@@ -12,6 +12,7 @@
 
 #include <unistd.h>
 #include "libft.h"
+#include "ms_utils.h"
 
 /*
 **  A function that prints shell tag
@@ -65,6 +66,9 @@ void			get_env(const char *env, char **name, char **content)
 void			gcl_norm(int flag)
 {
 	if (!flag)
-		exit(1);
+	{
+		print_line("exit\n", 1);
+		exit(0);
+	}
 	write(1, "  \b\b", 4);
 }
