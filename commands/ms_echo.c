@@ -19,6 +19,17 @@ static void	is_n_option(int n_option)
 		write(1, "\n", 1);
 }
 
+static int	args_check(char **args, int i)
+{
+	while (args[i])
+	{
+		if (ms_strcmp(args[i], ""))
+			return (1);
+		++i;
+	}
+	return (0);
+}
+
 static void	print_args(char **args, int i)
 {
 	while (args[i])
@@ -27,7 +38,7 @@ static void	print_args(char **args, int i)
 		++i;
 		if (!args[i])
 			break ;
-		if (ms_strcmp(args[i - 1], ""))
+		if (ms_strcmp(args[i - 1], "") && args_check(args, i))
 			write(1, " ", 1);
 	}
 }
