@@ -67,24 +67,11 @@ int			check_quotes(t_cmd *cmd, t_list *env_list)
 	return (0);
 }
 
-/*
-**  A function that saves and restores in and out file descriptors
-*/
-
-void		save_restore_fds(int *in, int *out, int flag)
+static void	fds_redirs(int *in, int *out, t_cmd *cmd)
 {
-	if (flag)
-	{
-		*in = dup(0);
-		*out = dup(1);
-	}
-	else
-	{
-		dup2(*in, 0);
-		dup2(*out, 1);
-		close(*in);
-		close(*out);
-	}
+	save_restore_fds(in, out, 1);
+	g_exit_status = 0;
+	handle_redirects(cmd);
 }
 
 /*
@@ -96,9 +83,7 @@ int			check_cmd(t_cmd *cmd, t_list **env_list)
 	int	in;
 	int	out;
 
-	save_restore_fds(&in, &out, 1);
-	g_exit_status = 0;
-	handle_redirects(cmd);
+	fds_redirs(&in, &out, cmd);
 	if (!ms_strcmp(cmd->cmd, "echo"))
 		g_exit_status = ms_echo(cmd->args);
 	else if (!ms_strcmp(cmd->cmd, "cd"))
@@ -114,7 +99,10 @@ int			check_cmd(t_cmd *cmd, t_list **env_list)
 	else if (!ms_strcmp(cmd->cmd, "exit"))
 		ms_exit(cmd);
 	else if (!try_external_cmd(cmd, env_list))
+	{
+		save_restore_fds(&in, &out, 0);
 		return (0);
+	}
 	save_restore_fds(&in, &out, 0);
 	return (1);
 }

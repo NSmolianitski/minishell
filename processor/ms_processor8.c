@@ -36,3 +36,23 @@ int			check_bslash2(char **str, int i)
 		ms_strswap(str, "", i, 0);
 	return (i);
 }
+
+/*
+**  A function that saves and restores in and out file descriptors
+*/
+
+void		save_restore_fds(int *in, int *out, int flag)
+{
+	if (flag)
+	{
+		*in = dup(0);
+		*out = dup(1);
+	}
+	else
+	{
+		dup2(*in, 0);
+		dup2(*out, 1);
+		close(*in);
+		close(*out);
+	}
+}
