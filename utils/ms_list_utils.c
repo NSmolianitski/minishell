@@ -59,7 +59,10 @@ char	*get_var_content(t_list *lst, char *var_name)
 	{
 		if (!ms_strcmp(lst->name, var_name))
 		{
-			content = ft_strdup(lst->content);
+			if (lst->content)
+				content = ft_strdup(lst->content);
+			else
+				content = NULL;
 			return (content);
 		}
 		lst = lst->next;
