@@ -24,8 +24,9 @@ static void	while_gw(const char *cmd_line, int *i)
 		if (!is_symb_esc(cmd_line, *i) &&
 			!quotes_flag && ft_strchr("<> |;", cmd_line[*i]))
 			break ;
-		if ((quotes_flag == 1 && cmd_line[*i] == '\'') ||
-			(quotes_flag == 2 && cmd_line[*i] == '"'))
+		if (((quotes_flag == 1 && cmd_line[*i] == '\'') ||
+			(quotes_flag == 2 && cmd_line[*i] == '"')) &&
+			!is_symb_esc(cmd_line, *i))
 		{
 			quotes_flag = 0;
 			++(*i);
