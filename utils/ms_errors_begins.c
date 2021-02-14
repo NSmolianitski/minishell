@@ -37,9 +37,10 @@ void	write_ms_err_begin_unset(char *str)
 
 void	write_ms_err_begin_exit(char *str)
 {
-	write(2, "minishell: exit: '", 18);
+	write(2, "minishell: exit: ", 17);
 	print_line(str, 2);
-	write(2, "': ", 3);
+	if (str)
+		write(2, ": ", 2);
 }
 
 void	write_ms_err_begin_cd(char *str)

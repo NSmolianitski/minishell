@@ -42,5 +42,6 @@ void		print_error(char *error, char *str, int err_type)
 	(!ms_strcmp(error, HNS)) ? print_line(HNS, 2) : 0;
 	(!ms_strcmp(error, MLA)) ? print_line(MLA, 2) : 0;
 	(!ms_strcmp(error, NAR)) ? print_line(NAR, 2) : 0;
+	(!ms_strcmp(error, TMA)) ? print_line(TMA, 2) : 0;
 	write(2, "\n", 1);
 }

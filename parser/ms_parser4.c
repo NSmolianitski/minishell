@@ -27,7 +27,8 @@ static int		end_check(const char *cmd_line, int *i, int *bf, char *cmd)
 	*i = skip_spaces(cmd_line, *i);
 	if (cmd_line[*i] == ';' || cmd_line[*i] == '|')
 	{
-		if (!cmd || cmd_line[(skip_spaces(cmd_line, *i + 1))] == '\0')
+		if (!cmd || (cmd_line[(skip_spaces(cmd_line, *i + 1))]
+			== '\0' && cmd_line[*i] == '|'))
 		{
 			count_cmds_err_check(cmd_line, *i);
 			if (cmd != NULL)

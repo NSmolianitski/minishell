@@ -30,6 +30,12 @@ void	ms_exit(t_cmd *cmd)
 				print_error(NAR, cmd->args[0], 6);
 				exit(255);
 			}
+			else if (cmd->args[1])
+			{
+				print_error(TMA, NULL, 6);
+				g_exit_status = 1;
+				return ;
+			}
 			++i;
 		}
 		status = ft_atoi(cmd->args[0]);
