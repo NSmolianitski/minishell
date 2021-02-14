@@ -55,6 +55,11 @@ int		ms_strswap(char **str, const char *inject, int start, int len)
 	char	*result;
 	char	*tmp;
 
+	if (!ms_strcmp(*str, "$"))
+	{
+		result = ft_strdup("$");
+		return (1);
+	}
 	result = ft_substr(*str, 0, start);
 	result = safe_strjoin(&result, inject);
 	tmp = ft_substr(*str, start + 1 + len, ft_strlen(&(*str)[start + len]));

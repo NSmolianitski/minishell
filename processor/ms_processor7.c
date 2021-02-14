@@ -60,6 +60,11 @@ int			check_quotes(t_cmd *cmd, t_list *env_list)
 	while (cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
+		if (ms_strcmp("echo", cmd->cmd))
+		{
+			free(cmd->args[i]);
+			cmd->args[i] = ft_strdup("");
+		}
 		if (swap_quotes(&cmd->args[i], env_list, cmd, 0))
 			return (1);
 		++i;

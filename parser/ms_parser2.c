@@ -54,7 +54,7 @@ void			swap_env(char **cmd, t_list *env_list)
 	char	*tmp;
 	int		len;
 
-	while (ft_strchr_quotes(*cmd, '$'))
+	while (ft_strchr_quotes(*cmd, '$') && ms_strcmp("$", *cmd))
 	{
 		env_start = ft_strchr_quotes(*cmd, '$');
 		tmp = find_env_in_word(*cmd, env_start + 1);

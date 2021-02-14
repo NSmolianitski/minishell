@@ -32,13 +32,26 @@ static int	args_check(char **args, int i)
 
 static void	print_args(char **args, int i)
 {
+	char	*str;
+	char	*tmp;
+
 	while (args[i])
 	{
+		while ((str = ft_strnstr(args[i], "echos empty argument :D", ft_strlen(args[i]))))
+		{
+			tmp = ft_substr(args[i], 0, str - args[i]);
+			str = ft_substr(args[i], str - args[i] + 23, ft_strlen(str));
+			free(args[i]);
+			safe_strjoin(&tmp, str);
+			free(str);
+			args[i] = tmp;
+		}
 		print_line(args[i], 1);
 		++i;
 		if (!args[i])
 			break ;
-		if (ms_strcmp(args[i - 1], "") && args_check(args, i))
+		if ((ms_strcmp(args[i - 1], "") && args_check(args, i)) ||
+			ms_strcmp(args[i - 1], "echos empty argument :D"))
 			write(1, " ", 1);
 	}
 }

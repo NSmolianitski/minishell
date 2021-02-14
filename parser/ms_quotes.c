@@ -14,6 +14,7 @@
 #include "libft.h"
 #include "ms_utils.h"
 #include "ms_parser.h"
+#include "ms_processor.h"
 
 int			process_env(char *str, t_list *env_list, char **env)
 {
@@ -103,6 +104,8 @@ char		*parse_qoutes(char *str, t_list *env_list)
 	i = 0;
 	if (str[0] == '\0')
 		str = ft_strdup("");
+	if (echo_empty_check(&str))
+		return (str);
 	while (str[i] != '\0')
 	{
 		if (str[i] == '"')

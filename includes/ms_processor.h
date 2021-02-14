@@ -27,6 +27,7 @@ typedef struct	s_coords
 
 int				g_exit_status;
 int				g_signal_flag;
+int				g_echo;
 void			processor(t_cmd	**cmd_arr, t_list **env_list);
 void			handle_redirects(t_cmd *cmd);
 void			sig_int(int sig);
@@ -61,5 +62,6 @@ int				check_bslash2(char **str, int i);
 int				redir_in(int *temp_fd, char *file, t_cmd *cmd, int index);
 int				redir_err_norm(int *temp_fd, char *file, t_cmd *cmd, int index);
 void			redir_stream_one(int temp_fd, t_cmd *cmd, int index);
+int				echo_empty_check(char **str);
 
 #endif
