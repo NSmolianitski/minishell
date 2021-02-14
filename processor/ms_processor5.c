@@ -54,7 +54,7 @@ int			echo_empty_check(char **str)
 {
 	if (g_echo)
 	{
-		if (ms_strcmp(*str, "''") || ms_strcmp(*str, "\"\""))
+		if (!ms_strcmp(*str, "''") || !ms_strcmp(*str, "\"\""))
 		{
 			*str = ft_strdup("echos empty argument :D");
 			return (1);
