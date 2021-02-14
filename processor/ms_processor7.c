@@ -123,7 +123,7 @@ void		execute_cmd(t_cmd *cmd, t_list **env_list)
 		print_error(MLA, "MULTILINE", 5);
 		g_exit_status = 1;
 	}
-	else if (!check_cmd(cmd, env_list) && ms_strcmp(cmd->cmd, ""))
+	else if (!check_cmd(cmd, env_list) || !ms_strcmp(cmd->cmd, ""))
 	{
 		print_error(CNF, cmd->cmd, 1);
 		g_exit_status = 127;
