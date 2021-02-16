@@ -15,7 +15,9 @@
 static void	sq_norm3(t_cmd *cmd, t_list *env_list, char **str, int is_cmd)
 {
 	swap_env(str, env_list);
-	if (is_cmd)
+	if (!ms_strcmp(cmd->cmd, "ENV NO CONTENT!"))
+		return ;
+	else if (is_cmd)
 		check_multiword_env(cmd);
 }
 
@@ -44,8 +46,8 @@ int			swap_quotes(char **str, t_list *env_list, t_cmd *cmd, int is_cmd)
 	}
 	else
 	{
-		handle_bslash(str);
 		sq_norm3(cmd, env_list, str, is_cmd);
+		handle_bslash(str);
 	}
 	return (0);
 }

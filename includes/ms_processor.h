@@ -63,5 +63,6 @@ int				redir_in(int *temp_fd, char *file, t_cmd *cmd, int index);
 int				redir_err_norm(int *temp_fd, char *file, t_cmd *cmd, int index);
 void			redir_stream_one(int temp_fd, t_cmd *cmd, int index);
 int				echo_empty_check(char **str);
+void			check_empty_args(t_cmd *cmd);
 
 #endif

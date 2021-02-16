@@ -30,7 +30,10 @@ void			list_to_arr(t_list *env_list, char ***envp)
 	{
 		(*envp)[i] = ft_strjoin(env_list->name, "=");
 		tmp = (*envp)[i];
-		(*envp)[i] = ft_strjoin((*envp)[i], env_list->content);
+		if (!env_list->content)
+			(*envp)[i] = ft_strjoin((*envp)[i], "");
+		else
+			(*envp)[i] = ft_strjoin((*envp)[i], env_list->content);
 		free(tmp);
 		env_list = env_list->next;
 		++i;

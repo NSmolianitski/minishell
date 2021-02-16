@@ -54,7 +54,7 @@ void			swap_env(char **cmd, t_list *env_list)
 	char	*tmp;
 	int		len;
 
-	while (ft_strchr_quotes(*cmd, '$') && ms_strcmp("$", *cmd))
+	while (*cmd && ft_strchr_quotes(*cmd, '$') && ms_strcmp("$", *cmd))
 	{
 		env_start = ft_strchr_quotes(*cmd, '$');
 		tmp = find_env_in_word(*cmd, env_start + 1);
@@ -67,6 +67,11 @@ void			swap_env(char **cmd, t_list *env_list)
 		if (ft_strnstr(*cmd, "$?", ft_strlen(*cmd)))
 			len = 1;
 		ms_strswap(cmd, content, (ft_strchr_quotes(*cmd, '$') - *cmd), len);
+		if (!ms_strcmp(*cmd, ""))
+		{
+			free(*cmd);
+			*cmd = ft_strdup("ENV NO CONTENT!");
+		}
 		double_free(tmp, content);
 	}
 }

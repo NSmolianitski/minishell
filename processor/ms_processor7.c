@@ -57,13 +57,14 @@ int			check_quotes(t_cmd *cmd, t_list *env_list)
 	if (!cmd->args)
 		return (0);
 	i = 0;
-	while (cmd->args[i])
+	while (cmd->args && cmd->args[i])
 	{
 		swap_env(&cmd->args[i], env_list);
 		if (swap_quotes(&cmd->args[i], env_list, cmd, 0))
 			return (1);
 		++i;
 	}
+	check_empty_args(cmd);
 	return (0);
 }
 
@@ -118,7 +119,8 @@ void		execute_cmd(t_cmd *cmd, t_list **env_list)
 		print_error(MLA, "MULTILINE", 5);
 		g_exit_status = 1;
 	}
-	else if (!ms_strcmp(cmd->cmd, "") || !check_cmd(cmd, env_list))
+	else if ((!ms_strcmp(cmd->cmd, "") || !check_cmd(cmd, env_list))
+		&& ms_strcmp(cmd->cmd, "ENV NO CONTENT!"))
 	{
 		print_error(CNF, cmd->cmd, 1);
 		g_exit_status = 127;

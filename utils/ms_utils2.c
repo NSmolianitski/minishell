@@ -37,7 +37,7 @@ char	*ft_strchr_quotes(const char *s, int c)
 			while (s[i] != '"' && s[i] != '\0')
 				++i;
 		}
-		if (s[i] == c)
+		if (s[i] == c && !is_symb_esc(s, i))
 			return ((char*)s + i);
 		++i;
 	}

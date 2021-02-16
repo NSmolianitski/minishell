@@ -56,3 +56,40 @@ void		save_restore_fds(int *in, int *out, int flag)
 		close(*out);
 	}
 }
+
+static void	first_arg_check(t_cmd *cmd)
+{
+	if (!cmd->args[0])
+	{
+		free(cmd->args);
+		cmd->args = NULL;
+	}
+}
+
+void		check_empty_args(t_cmd *cmd)
+{
+	int		i;
+
+	i = 0;
+	if (cmd->args)
+	{
+		while (cmd->args[i])
+		{
+			if (!ms_strcmp(cmd->args[i], "ENV NO CONTENT!"))
+			{
+				free(cmd->args[i]);
+				while (cmd->args[i + 1])
+				{
+					cmd->args[i] = ft_strdup(cmd->args[i + 1]);
+					free(cmd->args[i + 1]);
+					++i;
+				}
+				cmd->args[i] = NULL;
+				i = 0;
+			}
+			else
+				++i;
+		}
+		first_arg_check(cmd);
+	}
+}
