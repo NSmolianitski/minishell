@@ -21,7 +21,7 @@ static void	is_n_option(int n_option)
 
 static int	args_check(char **args, int i)
 {
-	while (args[i])
+	while (i && args[i])
 	{
 		if (ms_strcmp(args[i], ""))
 			return (1);
@@ -30,26 +30,33 @@ static int	args_check(char **args, int i)
 	return (0);
 }
 
-static void	print_args(char **args, int i)
+static void	empty_norm(char **args, int i)
 {
 	char	*str;
 	char	*tmp;
 
+	while ((str = ft_strnstr(args[i], "echos empty argument :D",
+						ft_strlen(args[i]))))
+	{
+		tmp = ft_substr(args[i], 0, str - args[i]);
+		str = ft_substr(args[i], str - args[i] + 23, ft_strlen(str));
+		free(args[i]);
+		safe_strjoin(&tmp, str);
+		free(str);
+		args[i] = tmp;
+	}
+}
+
+static void	print_args(char **args, int i)
+{
 	while (args[i])
 	{
 		if (ft_strnstr(args[i], "echos empty argument :D", ft_strlen(args[i])))
 		{
-			while ((str = ft_strnstr(args[i], "echos empty argument :D", ft_strlen(args[i]))))
-			{
-				tmp = ft_substr(args[i], 0, str - args[i]);
-				str = ft_substr(args[i], str - args[i] + 23, ft_strlen(str));
-				free(args[i]);
-				safe_strjoin(&tmp, str);
-				free(str);
-				args[i] = tmp;
-			}
+			empty_norm(args, i);
 			if (args_check(args, i))
 				write(1, " ", 1);
+			print_line(args[i], 1);
 			++i;
 			continue ;
 		}
