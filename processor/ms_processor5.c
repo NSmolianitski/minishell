@@ -33,9 +33,6 @@ int			swap_quotes(char **str, t_list *env_list, t_cmd *cmd, int is_cmd)
 
 	i = 0;
 	tmp = NULL;
-	g_echo = 0;
-	if (!is_cmd)
-		g_echo = 1;
 	if (ms_bs_strchr(*str, '\'') || ms_bs_strchr(*str, '"'))
 	{
 		ret = sq_norm6(i, str, env_list, tmp);

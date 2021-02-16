@@ -52,8 +52,11 @@ int			check_quotes(t_cmd *cmd, t_list *env_list)
 {
 	int			i;
 
+	g_echo = 0;
 	if (swap_quotes(&cmd->cmd, env_list, cmd, 1))
 		return (1);
+	if (!ms_strcmp(cmd->cmd, "echo"))
+		g_echo = 1;
 	if (!cmd->args)
 		return (0);
 	i = 0;
