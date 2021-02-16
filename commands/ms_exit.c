@@ -25,7 +25,7 @@ void	ms_exit(t_cmd *cmd)
 		i = 0;
 		while (cmd->args[0][i])
 		{
-			if (!ft_isdigit(cmd->args[0][i]))
+			if (!ft_isdigit(cmd->args[0][i]) && cmd->args[0][0] != '-')
 			{
 				print_error(NAR, cmd->args[0], 6);
 				exit(255);

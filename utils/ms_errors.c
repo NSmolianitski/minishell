@@ -12,10 +12,21 @@
 
 #include <unistd.h>
 #include "ms_utils.h"
+#include "ms_processor.h"
 
 static void	write_ms_err_begin(void)
 {
 	write(2, "minishell: ", 11);
+}
+
+static void	err_status_check(char *error)
+{
+	if (!ms_strcmp(error, SEN) || !ms_strcmp(error, SEP))
+		g_exit_status = 2;
+	else if (!ms_strcmp(error, TMA))
+		g_exit_status = 1;
+	if (!g_exit_status)
+		g_exit_status = 1;
 }
 
 void		print_error(char *error, char *str, int err_type)
@@ -43,5 +54,6 @@ void		print_error(char *error, char *str, int err_type)
 	(!ms_strcmp(error, MLA)) ? print_line(MLA, 2) : 0;
 	(!ms_strcmp(error, NAR)) ? print_line(NAR, 2) : 0;
 	(!ms_strcmp(error, TMA)) ? print_line(TMA, 2) : 0;
+	err_status_check(error);
 	write(2, "\n", 1);
 }
