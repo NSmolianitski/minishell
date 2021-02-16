@@ -86,7 +86,7 @@ static void	if_find_var(t_cmd *cmd, t_list **env_list, char *name, int arr[2])
 		{
 			++arr[0];
 			j = arr[0];
-			while (cmd->args[0][arr[0]] != '\0')
+			while (cmd->args[arr[1]][arr[0]] != '\0')
 				++arr[0];
 			content = ft_substr(cmd->args[arr[1]], j, arr[0] - j);
 		}
