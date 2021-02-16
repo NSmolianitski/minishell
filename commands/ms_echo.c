@@ -21,7 +21,7 @@ static void	is_n_option(int n_option)
 
 static int	args_check(char **args, int i)
 {
-	while (i && args[i])
+	while (args[i])
 	{
 		if (ms_strcmp(args[i], ""))
 			return (1);
@@ -54,10 +54,10 @@ static void	print_args(char **args, int i)
 		if (ft_strnstr(args[i], "echos empty argument :D", ft_strlen(args[i])))
 		{
 			empty_norm(args, i);
-			if (args_check(args, i))
-				write(1, " ", 1);
 			print_line(args[i], 1);
 			++i;
+			if (args_check(args, i))
+				write(1, " ", 1);
 			continue ;
 		}
 		print_line(args[i], 1);
