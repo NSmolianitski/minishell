@@ -20,7 +20,7 @@ static char		*find_env_in_word(const char *cmd, char *env_start)
 	char	*env;
 	int		i;
 
-	env_end = ms_strmultichr(env_start, "$'\"=/");
+	env_end = ms_strmultichr(env_start, "$'\"=/\\");
 	if (!env_end)
 		i = ft_strlen(env_start);
 	else
