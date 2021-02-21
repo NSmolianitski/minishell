@@ -20,17 +20,19 @@
 
 int		is_symb_esc(const char *str, int i)
 {
-	if (i > 1)
+	int	bslash_num;
+
+	bslash_num = 0;
+	while (str[i - 1] == '\\')
 	{
-		if (str[i - 1] == '\\' && str[i - 2] == '\\')
-			return (0);
-		else if (str[i - 1] == '\\')
-			return (1);
-	}
-	else if (i > 0)
 		if (str[i - 1] == '\\')
-			return (1);
-	return (0);
+			++bslash_num;
+		--i;
+	}
+	if (bslash_num % 2 == 0)
+		return (0);
+	else
+		return (1);
 }
 
 /*

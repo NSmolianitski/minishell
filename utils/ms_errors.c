@@ -21,8 +21,10 @@ static void	write_ms_err_begin(void)
 
 static void	err_status_check(char *error)
 {
-	if (!ms_strcmp(error, SEN) || !ms_strcmp(error, SEP))
+	if (!ms_strcmp(error, SEN))
 		g_exit_status = 2;
+	else if (!ms_strcmp(error, SES) || !ms_strcmp(error, SEP))
+		g_exit_status = 258;
 	else if (!ms_strcmp(error, TMA))
 		g_exit_status = 1;
 	if (!g_exit_status)
